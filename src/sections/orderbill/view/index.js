@@ -1,0 +1,1 @@
+export { default as OrderBillView } from './order-bill-view';

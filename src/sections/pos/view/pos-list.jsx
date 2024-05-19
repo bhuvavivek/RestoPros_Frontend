@@ -1,0 +1,281 @@
+import { debounce } from 'lodash';
+import { enqueueSnackbar } from 'notistack';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+
+import { Autocomplete, Button, InputAdornment, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import { Stack } from '@mui/system';
+
+import { useBoolean } from 'src/hooks/use-boolean';
+
+import axiosInstance from 'src/utils/axios';
+
+import { useGetCategories } from 'src/api/category';
+import { useGetCustomers } from 'src/api/customers';
+import { useGetFoodItems } from 'src/api/food-items';
+
+import Iconify from 'src/components/iconify';
+import { useSettingsContext } from 'src/components/settings';
+
+import CreateCustomerDialog from 'src/sections/customer/create-customer';
+
+import { useFoodCartContext } from '../context';
+import PosCartView from '../pos-cart';
+import PosCategoryDetail from '../pos-category-list';
+import PosItemDetail from '../pos-item-list';
+import PosItemSkeleton from '../pos-item-skeleton';
+import PosTableDialog from '../pos-popup';
+
+
+
+
+export default function PosListView({ id, sale }) {
+
+  const settings = useSettingsContext()
+
+  const { categories } = useGetCategories();
+
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  // const expandedQuery = useGetQueryParamsData({ category: selectedCategory ? selectedCategory._id : null });
+
+
+
+  const defaultFilter = {
+    search: ''
+  }
+
+  const [filter, setFilters] = useState(defaultFilter);
+  const queryParameters = { expand: true, limit: 1000 };
+
+  if (filter.search) {
+    queryParameters.search = filter.search;
+  } else if (selectedCategory) {
+    queryParameters.category = selectedCategory._id;
+  }
+
+  const { FoodItems, FoodItemsLoading } = useGetFoodItems(queryParameters);
+
+  const [customerSearch, setCustomerSearch] = useState();
+
+  const { customers } = useGetCustomers({ search: customerSearch });
+  const [open, setOpen] = useState(false);
+
+  const { pickedTable, setCustomerId, orderType, customerId, items, onReset, setPickedTable, setOrderType, onAddToCart } = useFoodCartContext()
+
+  const [customerOptions, setCustomerOptions] = useState(customers);
+  const debouncedSetCustomerSearch = debounce(setCustomerSearch, 300);
+
+  const [isKot, setIsKot] = useState(false)
+  const handlesetIsKot = (value) => setIsKot(value);
+
+  const upload = useBoolean();
+  const navigate = useNavigate('');
+
+
+  useEffect(() => {
+    if (id && sale) {
+      onReset()
+      setPickedTable(sale?.table);
+
+      setOrderType(sale?.type);
+      setCustomerId(sale?.customer?._id);
+
+      sale.orderList?.forEach((item) => {
+        const foodItem = FoodItems.find((menuitem) => menuitem._id === item?.item_id);
+
+        console.log(foodItem, "this is finded food items");
+        if (foodItem) {
+          for (let i = 0; i < item.quantity; i++) {
+            onAddToCart(foodItem);
+          }
+        }
+      })
+
+    }
+  }, [id, sale, pickedTable])
+
+
+  useEffect(() => {
+    if (customerSearch && customerSearch.trim() !== "") {
+      setCustomerOptions(customers.filter(
+        customer =>
+          // customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+          customer.phone.toString().toLowerCase().includes(customerSearch.toString().toLowerCase())
+      ));
+    } else {
+      setCustomerOptions(customers);
+    }
+  }, [customerSearch, customers])
+
+
+  useEffect(() => {
+    if (Object.keys(pickedTable).length === 0 && !id) {
+      setOpen(true);
+    }
+  }, [pickedTable, id])
+
+
+  const closePopUp = () => {
+    setOpen(false);
+  }
+
+
+
+  // select the category
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+
+  }
+
+  const handleOrderSubmit = async () => {
+    try {
+      const Orders = items.map((item) => ({
+        item_id: item._id,
+        quantity: item.quantity
+      }));
+      const response = await axiosInstance.post('/api/order/create', {
+        type: orderType,
+        table_id: pickedTable._id,
+        customer_id: customerId,
+        Orders
+      });
+
+      if (response.status === 201) {
+        if (isKot) {
+          const orderId = response?.data?.data?.OrderData?._id
+          navigate(`/${orderId}/order-bill`)
+          setIsKot(false);
+        }
+        enqueueSnackbar('Order Created Successfully!!')
+        onReset()
+      }
+    } catch (error) {
+      enqueueSnackbar('Please Try Again Order Not Created!!', { variant: 'error' })
+    }
+    console.log(pickedTable, orderType, customerId, items)
+  }
+
+
+  return (
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}  >
+      {/* pos search bar menu */}
+      <Stack
+        spacing={2}
+        alignItems={{ xs: 'flex-end', md: 'center' }}
+        direction={{
+          xs: 'column',
+          md: 'row',
+        }}
+        sx={{
+          p: 2.5,
+          pr: { xs: 2.5, md: 1 },
+        }}
+      >
+        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
+          <TextField
+            fullWidth
+            value={filter.search}
+            onChange={(event) => setFilters({ ...filter, search: event.target.value })}
+            placeholder="Search..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Autocomplete
+            disablePortal
+            options={customers}
+            sx={{ width: 300 }}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => <TextField {...params} label="SelectCustomer" />}
+            onChange={(event, value) => setCustomerId(value?._id)} // replace console.log with your function to handle the selected customer
+            onInputChange={(event, newInputValue, reason) => {
+              if (reason !== 'select-option') {
+                debouncedSetCustomerSearch(newInputValue);
+              }
+            }}
+          />
+          <Button
+            onClick={
+              () => {
+                setOpen(true);
+              }
+            }
+            sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 0.2 }}
+            variant="contained"
+          >
+            Edit Table
+          </Button>
+        </Stack>
+
+
+        <Button
+          onClick={upload.onTrue}
+          sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 0.2 }}
+          variant="contained"
+          startIcon={<Iconify icon="mingcute:add-line" />}
+        >
+          New Customer
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 0.2 }}
+          onClick={handleOrderSubmit}
+        >
+          Submit
+        </Button>
+      </Stack >
+
+      {/* PosCate categoryDetail component */}
+      <PosCategoryDetail list={categories} handleCategorySelect={handleCategorySelect} />
+
+
+      <Grid container spacing={2}>
+
+        {/* PosItemDetail component taking 8 columns */}
+        <Grid item xs={8}>
+          <Box
+            sx={{
+              height: '100%',
+              maxHeight: '500px',
+              overflowY: 'auto',
+              '&::-webskit-scrollbar': {
+                display: 'none'
+              }
+            }}
+          >
+            {FoodItemsLoading ? <PosItemSkeleton /> : <PosItemDetail FoodItems={FoodItems} />}
+          </Box>
+        </Grid>
+
+        {/* Another component taking 4 columns */}
+        <Grid item xs={4} >
+          <PosCartView handlesetIsKot={handlesetIsKot} isKot={isKot} />
+        </Grid>
+      </Grid>
+
+      <PosTableDialog open={open} onClose={closePopUp} />
+      <CreateCustomerDialog open={upload.value} onClose={upload.onFalse} title="Create Customer" />
+
+
+    </Container>
+
+
+
+  );
+}
+
+
+
+PosListView.propTypes = {
+  id: PropTypes.string,
+  sale: PropTypes.array
+}
