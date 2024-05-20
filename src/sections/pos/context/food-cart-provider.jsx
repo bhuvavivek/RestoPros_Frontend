@@ -120,11 +120,39 @@ export function FoodCartProvider({ children }) {
     [update, state.items, calculateTotal]
   );
 
+  const onAddMultipleToCart = useCallback(
+    (newItems) => {
+      const updatedItems = [];
+
+      newItems.forEach(newItem => {
+        // Add a quantity field to the new item if it doesn't have one
+        if (!newItem.quantity) {
+          newItem.quantity = 1;
+        }
+
+        const existingItemIndex = updatedItems.findIndex(item => item._id === newItem._id);
+        if (existingItemIndex !== -1) {
+          // If the item already exists in the cart, increase its quantity
+          updatedItems[existingItemIndex] = {
+            ...updatedItems[existingItemIndex],
+            quantity: updatedItems[existingItemIndex].quantity + newItem.quantity,
+          };
+        } else {
+          // If the item is not in the cart, add it
+          updatedItems.push(newItem);
+        }
+      });
+
+      update('items', updatedItems);
+      calculateTotal();
+    },
+    [update, calculateTotal]
+  );
+
   const onReset = useCallback(() => {
 
     reset();
     // router.replace(paths.product.root);
-
   }, [reset]);
 
   // for set and update a table
@@ -147,6 +175,11 @@ export function FoodCartProvider({ children }) {
     update('customerId', customerId)
   }, [update])
 
+  const onClearItems = useCallback(() => {
+    update('items', []);
+    calculateTotal();
+  }, [update, calculateTotal]);
+
   const memoizedValue = useMemo(
     () => ({
       ...state,
@@ -163,7 +196,9 @@ export function FoodCartProvider({ children }) {
       //
       setPickedTable,
       setOrderType,
-      setCustomerId
+      setCustomerId,
+      onAddMultipleToCart,
+      onClearItems
     }),
     [
 
@@ -177,7 +212,9 @@ export function FoodCartProvider({ children }) {
       state,
       setPickedTable,
       setOrderType,
-      setCustomerId
+      setCustomerId,
+      onAddMultipleToCart,
+      onClearItems
     ]
   );
 

@@ -78,7 +78,10 @@ export default function SaleListView() {
 
   const [filters, setFilters] = useState(defaultFilters);
 
-  const { sales, salesLoading, salesEmpty } = useGetSales({ expand: 'true' });
+  const [limit, setLimit] = useState(5);
+
+
+  const { sales, salesLoading, salesEmpty, totaldocuments } = useGetSales({ page: 1, per_page: limit, expand: 'true' });
 
   const [currentCustomer, setCurrentCustomer] = useState();
 
@@ -93,6 +96,15 @@ export default function SaleListView() {
     setCurrentCustomer()
     upload.onFalse()
   }
+
+  // code for pagination
+  const handlePageChange = useCallback((event, newPage) => {
+    // Call the original onChangePage function
+    table.onChangePage(event, newPage);
+
+    setLimit((newPage + 1) * table.rowsPerPage)
+  }, [table]);
+
 
 
   //  here i m fetching category data and set data
@@ -175,12 +187,11 @@ export default function SaleListView() {
   }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
 
-
-
-
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
+
+
 
   return (
     <>
@@ -297,16 +308,17 @@ export default function SaleListView() {
 
                   <TableNoData notFound={notFound} />
                 </TableBody>
+
               </Table>
             </Scrollbar>
           </TableContainer>
 
           {/* pagination */}
           <TablePaginationCustom
-            count={dataFiltered.length}
+            count={totaldocuments}
             page={table.page}
             rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
+            onPageChange={handlePageChange}
             onRowsPerPageChange={table.onChangeRowsPerPage}
             //
             dense={table.dense}
@@ -360,10 +372,11 @@ function applyFilter({ inputData, comparator, filters }) {
   inputData = stabilizedThis.map((el) => el[0]);
 
   inputData = inputData.filter((customer) => {
-    const nameMatch = name ? customer.customer_id.name.toLowerCase().includes(name.toLowerCase()) : true;
-    const emailAddressMatch = emailAddress ? customer.customer_id.email.toLowerCase().includes(emailAddress.toLowerCase()) : true;
-    const phoneNumberMatch = phoneNumber ? customer.customer_id.phone.toString().includes(phoneNumber.toString()) : true;
-    return nameMatch || emailAddressMatch || phoneNumberMatch;
+    const nameMatch = name ? customer?.customer?.name.toLowerCase().includes(name.toLowerCase()) : true;
+    const emailAddressMatch = emailAddress ? customer?.customer?.email?.toLowerCase().includes(emailAddress.toLowerCase()) : true;
+    const phoneNumberMatch = phoneNumber ? customer?.customer?.phone.toString().includes(phoneNumber.toString()) : true;
+    const orderNoMatch = name ? customer?.order_no?.toString().includes(name.toString()) : true;
+    return nameMatch || emailAddressMatch || phoneNumberMatch || orderNoMatch;
   });
 
 

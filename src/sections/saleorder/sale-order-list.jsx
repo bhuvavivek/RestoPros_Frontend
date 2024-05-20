@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-import { Card, CardContent, LinearProgress, Typography } from "@mui/material";
+import { Card, Typography, CardContent, LinearProgress } from "@mui/material";
 
 import SaleOrderItem from "./sale-order-item";
 
@@ -14,8 +14,6 @@ export default function SaleOrderList({ sale }) {
 
 
   const progressPercentage = Math.round((progress.completed.length / progress.total) * 100);
-
-  console.log(sale);
 
   return (
     <Card>

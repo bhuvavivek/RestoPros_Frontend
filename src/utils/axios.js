@@ -35,6 +35,10 @@ export const endpoints = {
     userLogin: '/api/user/login',
     register: '/api/auth/register',
   },
+  dashbord: {
+    count: '/api/sales/count-dashboard',
+    salecount: '/api/sales/order-sales-count',
+  },
   mail: {
     list: '/api/mail/list',
     details: '/api/mail/details',
@@ -99,4 +103,7 @@ export const endpoints = {
   editOrder: {
     editStatus: (id) => `/api/orderlist/status/${id}`,
   },
+  profile:{
+    userprofile:`/api/user/me`,
+  }
 };

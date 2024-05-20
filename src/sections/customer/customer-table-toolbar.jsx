@@ -12,6 +12,7 @@ import Iconify from 'src/components/iconify';
 export default function CustomerToolbar({
   filters,
   onFilters,
+  setSearch
 }) {
 
   const handleFilterName = useCallback(
@@ -19,8 +20,9 @@ export default function CustomerToolbar({
       onFilters('name', event.target.value);
       onFilters('emailAddress', event.target.value);
       onFilters('phoneNumber', event.target.value);
+      setSearch(event.target.value);
     },
-    [onFilters]
+    [onFilters, setSearch]
   );
 
   return (
@@ -60,6 +62,5 @@ export default function CustomerToolbar({
 CustomerToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
-
-
+  setSearch: PropTypes.func
 };

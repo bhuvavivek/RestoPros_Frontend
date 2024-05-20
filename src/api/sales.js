@@ -22,8 +22,9 @@ export function useGetSales(quaryParams) {
       salesError: error,
       salesValidating: isValidating,
       salesEmpty: !isLoading && !data?.data.orders?.length,
+      totaldocuments: data?.data?.total,
     }),
-    [data?.data.orders, error, isLoading, isValidating]
+    [data?.data.orders, data?.data?.total, error, isLoading, isValidating]
   );
 
   return memoizedValue;

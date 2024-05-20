@@ -79,14 +79,13 @@ export default function FoodItemListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
 
-  const [custmPaginationQuery, setPaginationQuery] = useState({ page: 1, limit: 5 });
+  const [limit, setLimit] = useState(5)
+  const [custmPaginationQuery, setPaginationQuery] = useState({ limit });
   const expandedQuery = useGetQueryParamsData(custmPaginationQuery);
+  const [search, setSearch] = useState();
 
-  const { FoodItems, FoodItemsLoading, FoodItemsEmpty } = useGetFoodItems(expandedQuery);
+  const { FoodItems, FoodItemsLoading, FoodItemsEmpty, totalDocuments } = useGetFoodItems({ page: 1, limit, expand: 'true', ...(search && { search }) });
   const { categories } = useGetCategories();
-
-
-
 
 
   const confirm = useBoolean();
@@ -100,11 +99,16 @@ export default function FoodItemListView() {
   }))
 
 
-  // useEffect(() => {
-  //   setPaginationQuery({ page: table.page + 1, limit: table.rowsPerPage });
-  // }, [table.page, table.rowsPerPage])
 
 
+  // code for pagination
+  const handlePageChange = useCallback((event, newPage) => {
+    // Call the original onChangePage function
+    table.onChangePage(event, newPage);
+
+    setLimit((newPage + 1) * table.rowsPerPage)
+
+  }, [table]);
 
 
   // handle popupclose
@@ -183,6 +187,7 @@ export default function FoodItemListView() {
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
+    setSearch()
   }, []);
 
   return (
@@ -216,6 +221,7 @@ export default function FoodItemListView() {
 
           <FoodItemTableToolbar
             filters={filters}
+            setSearch={setSearch}
             onFilters={handleFilters}
             categoryOptions={CATEGORY_OPTIONS}
           />
@@ -306,10 +312,10 @@ export default function FoodItemListView() {
 
           {/* pagination */}
           <TablePaginationCustom
-            count={dataFiltered.length}
+            count={totalDocuments}
             page={table.page}
             rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
+            onPageChange={handlePageChange}
             onRowsPerPageChange={table.onChangeRowsPerPage}
             //
             dense={table.dense}

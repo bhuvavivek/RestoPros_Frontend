@@ -70,9 +70,11 @@ export default function CustomerListView() {
 
   const [tableData, setTableData] = useState([]);
 
+  const [search, setSearch] = useState()
   const [filters, setFilters] = useState(defaultFilters);
 
-  const { customers, customersLoading, customersEmpty } = useGetCustomers();
+  const [limit, setLimit] = useState(5);
+  const { customers, customersLoading, customersEmpty, totalDocuments } = useGetCustomers({ limit, ...(search && { search }) });
 
   const [currentCustomer, setCurrentCustomer] = useState();
 
@@ -88,6 +90,14 @@ export default function CustomerListView() {
     upload.onFalse()
   }
 
+  // code for pagination
+  const handlePageChange = useCallback((event, newPage) => {
+    // Call the original onChangePage function
+    table.onChangePage(event, newPage);
+
+    setLimit((newPage + 1) * table.rowsPerPage)
+
+  }, [table]);
 
   //  here i m fetching category data and set data
   useEffect(() => {
@@ -173,6 +183,7 @@ export default function CustomerListView() {
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
+    setSearch();
   }, []);
 
   return (
@@ -207,6 +218,7 @@ export default function CustomerListView() {
           <CustomerTableToolbar
             filters={filters}
             onFilters={handleFilters}
+            setSearch={setSearch}
           />
 
           {canReset && (
@@ -296,10 +308,10 @@ export default function CustomerListView() {
 
           {/* pagination */}
           <TablePaginationCustom
-            count={dataFiltered.length}
+            count={totalDocuments}
             page={table.page}
             rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
+            onPageChange={handlePageChange}
             onRowsPerPageChange={table.onChangeRowsPerPage}
             //
             dense={table.dense}
@@ -353,9 +365,9 @@ function applyFilter({ inputData, comparator, filters }) {
   inputData = stabilizedThis.map((el) => el[0]);
 
   inputData = inputData.filter((customer) => {
-    const nameMatch = name ? customer.name.toLowerCase().includes(name.toLowerCase()) : true;
-    const emailAddressMatch = emailAddress ? customer.email.toLowerCase().includes(emailAddress.toLowerCase()) : true;
-    const phoneNumberMatch = phoneNumber ? customer.phone.toString().includes(phoneNumber.toString()) : true;
+    const nameMatch = name ? customer?.name?.toLowerCase().includes(name.toLowerCase()) : true;
+    const emailAddressMatch = emailAddress ? customer?.email?.toLowerCase().includes(emailAddress.toLowerCase()) : true;
+    const phoneNumberMatch = phoneNumber ? customer?.phone?.toString().includes(phoneNumber.toString()) : true;
     return nameMatch || emailAddressMatch || phoneNumberMatch;
   });
 

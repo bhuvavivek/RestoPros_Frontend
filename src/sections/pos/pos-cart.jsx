@@ -125,7 +125,7 @@ FoodItemCardList.propTypes = {
     price: PropTypes.number,
     quantity: PropTypes.number,
     name: PropTypes.string,
-    pictures: PropTypes.arrayOf(PropTypes.string),
+    pictures: PropTypes.string,
     _id: PropTypes.string,
 
     // Add other properties of item here as needed

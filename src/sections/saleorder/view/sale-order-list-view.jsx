@@ -1,14 +1,14 @@
 
-import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 import { paths } from 'src/routes/paths';
 
 import { useGetSales } from 'src/api/sales';
 
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { LoadingScreen } from 'src/components/loading-screen';
 import { useSettingsContext } from 'src/components/settings';
+import { LoadingScreen } from 'src/components/loading-screen';
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
 import SaleOrderList from '../sale-order-list';
 
@@ -18,7 +18,8 @@ export default function SaleOrderListView() {
 
   const { sales, salesLoading } = useGetSales({
     expand: true,
-    orderList: true
+    orderList: true,
+    status: 'pending'
   })
 
   if (salesLoading) {

@@ -1,14 +1,17 @@
-import { useMemo } from "react";
-import useSWR from "swr";
+import useSWR from 'swr';
+import { useMemo } from 'react';
 
-import { endpoints, fetcher } from "src/utils/axios";
+import { fetcher, endpoints } from 'src/utils/axios';
 
-export function useGetUsers() {
-  const URL = [endpoints.user.list, {
-    params: {
-      expand: "true"
-    }
-  }];
+export function useGetUsers(queryParams) {
+  const URL = queryParams
+    ? [
+        endpoints.user.list,
+        {
+          params: queryParams,
+        },
+      ]
+    : endpoints.user.list;
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
@@ -19,8 +22,9 @@ export function useGetUsers() {
       usersError: error,
       usersValidating: isValidating,
       usersEmpty: !isLoading && !data?.user.length,
+      totalDocuments: data?.totalDocuments,
     }),
-    [data?.user, error, isLoading, isValidating]
+    [data?.user, data?.totalDocuments, error, isLoading, isValidating]
   );
 
   return memoizedValue;

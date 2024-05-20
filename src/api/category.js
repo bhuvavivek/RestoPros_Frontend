@@ -1,10 +1,17 @@
-import { useMemo } from "react";
-import useSWR from "swr";
+import { useMemo } from 'react';
+import useSWR from 'swr';
 
-import { endpoints, fetcher } from "src/utils/axios";
+import { endpoints, fetcher } from 'src/utils/axios';
 
-export function useGetCategories() {
-  const URL = endpoints.category.list;
+export function useGetCategories(quaryParams) {
+  const URL = quaryParams
+    ? [
+        endpoints.category.list,
+        {
+          params: quaryParams,
+        },
+      ]
+    : endpoints.category.list;
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
@@ -21,5 +28,3 @@ export function useGetCategories() {
 
   return memoizedValue;
 }
-
-
