@@ -78,25 +78,26 @@ export default function PosListView({ id, sale }) {
 
   useEffect(() => {
     if (id && sale) {
-      onReset()
-      setPickedTable(sale?.table);
+      onReset();
+      setPickedTable(sale.table);
+      setOrderType(sale.type);
+      setCustomerId(sale.customer?._id);
 
-      setOrderType(sale?.type);
-      setCustomerId(sale?.customer?._id);
-
+      const filteredItems = [];
       sale.orderList?.forEach((item) => {
-        const foodItem = FoodItems.find((menuitem) => menuitem._id === item?.item_id);
-
-        console.log(foodItem, "this is finded food items");
+        const foodItem = FoodItems.find((menuItem) => menuItem._id === item.item_id);
         if (foodItem) {
           for (let i = 0; i < item.quantity; i++) {
-            onAddToCart(foodItem);
+            filteredItems.push(foodItem);
           }
         }
+      });
+      
+      filteredItems.forEach((item)=>{
+        onAddToCart(item)
       })
-
     }
-  }, [id, sale, pickedTable])
+  }, [id, sale]);
 
 
   useEffect(() => {
@@ -277,5 +278,5 @@ export default function PosListView({ id, sale }) {
 
 PosListView.propTypes = {
   id: PropTypes.string,
-  sale: PropTypes.array
+  sale: PropTypes.object
 }

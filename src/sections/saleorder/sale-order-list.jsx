@@ -15,7 +15,6 @@ export default function SaleOrderList({ sale }) {
 
   const progressPercentage = Math.round((progress.completed.length / progress.total) * 100);
 
-  console.log(sale);
 
   return (
     <Card>

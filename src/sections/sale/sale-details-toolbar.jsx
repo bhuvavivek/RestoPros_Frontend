@@ -133,9 +133,9 @@ export default function SaleDetailsToolbar({
 
 SaleDetailsToolbar.propTypes = {
   backLink: PropTypes.string,
-  createdAt: PropTypes.instanceOf(Date),
+  createdAt: PropTypes.string,
   onChangeStatus: PropTypes.func,
-  orderNumber: PropTypes.string,
+  orderNumber: PropTypes.number,
   status: PropTypes.string,
   statusOptions: PropTypes.array,
   openEditDialog: PropTypes.func,
