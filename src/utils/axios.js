@@ -103,7 +103,13 @@ export const endpoints = {
   editOrder: {
     editStatus: (id) => `/api/orderlist/status/${id}`,
   },
-  profile:{
-    userprofile:`/api/user/me`,
+  profile: {
+    userprofile: `/api/user/me`,
+  },
+  report: {
+    mostSold: '/api/report/most-sold',
+    overAll: '/api/report/overall'
+
+
   }
 };

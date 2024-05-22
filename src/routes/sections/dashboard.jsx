@@ -5,6 +5,7 @@ import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
 
 import { LoadingScreen } from 'src/components/loading-screen';
+
 // ----------------------------------------------------------------------
 
 // OVERVIEW
@@ -91,8 +92,9 @@ const UserNewPage = lazy(() => import('src/pages/dashboard/userdetails/usernew')
 const UserPermissionPage = lazy(() => import('src/pages/dashboard/userpermission/user-permission'))
 
 // SaleOrder
-
 const SaleOrderPage = lazy(() => import('src/pages/dashboard/saleorder'))
+
+
 export const dashboardRoutes = [
   {
     path: 'dashboard',
