@@ -5,6 +5,7 @@ import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
 
 import { LoadingScreen } from 'src/components/loading-screen';
+
 // ----------------------------------------------------------------------
 
 // OVERVIEW
@@ -91,8 +92,13 @@ const UserNewPage = lazy(() => import('src/pages/dashboard/userdetails/usernew')
 const UserPermissionPage = lazy(() => import('src/pages/dashboard/userpermission/user-permission'))
 
 // SaleOrder
-
 const SaleOrderPage = lazy(() => import('src/pages/dashboard/saleorder'))
+
+// Sold Report
+
+const SoldReport = lazy(() => import('src/pages/dashboard/sold-report'))
+
+
 export const dashboardRoutes = [
   {
     path: 'dashboard',
@@ -181,6 +187,10 @@ export const dashboardRoutes = [
           { path: 'new', element: <ProductCreatePage /> },
           { path: ':id/edit', element: <ProductEditPage /> },
         ],
+      },
+      {
+        path: 'sold-report',
+        element: <SoldReport />
       },
       {
         path: 'order',

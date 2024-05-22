@@ -6,7 +6,7 @@ function withPermission(WrappedComponent, requiredPermissions) {
   return function WithPermission(props) {
     const { profile } = useProfileContext();
 
-    if (requiredPermissions.some((permission) => profile.permissions.includes(permission))) {
+    if (profile.permissions.include(requiredPermissions)) {
       return <WrappedComponent {...props} />;
     }
     return <Redirect to="/maindashboard" />;

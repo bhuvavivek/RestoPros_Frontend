@@ -279,6 +279,6 @@ SaleOrderDialog.propTypes = {
   open: PropTypes.bool,
   title: PropTypes.string,
   currentCustomer: PropTypes.object,
-  saleinfo: PropTypes.object,
+  saleinfo: PropTypes.array,
   refetch: PropTypes.func
 };

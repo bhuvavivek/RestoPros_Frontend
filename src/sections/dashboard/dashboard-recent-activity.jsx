@@ -95,7 +95,6 @@ function DashboardRecentActivityRow({ row }) {
     console.info('DELETE', row.id);
   };
 
-
   return (
     <>
       <TableRow>
