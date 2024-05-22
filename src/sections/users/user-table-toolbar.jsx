@@ -20,6 +20,7 @@ export default function UserTableToolbar({
       onFilters('name', event.target.value);
       onFilters('emailAddress', event.target.value);
       onFilters('phoneNumber', event.target.value);
+      setSearch();
     },
     [onFilters]
   );
@@ -61,6 +62,6 @@ export default function UserTableToolbar({
 UserTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
-
+  setSearch: PropTypes.func
 
 };

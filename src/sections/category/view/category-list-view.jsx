@@ -2,16 +2,16 @@
 
 
 import isEqual from 'lodash/isEqual';
-import { useCallback, useEffect, useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
-import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableContainer from '@mui/material/TableContainer';
+import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
+import Container from '@mui/material/Container';
+import TableBody from '@mui/material/TableBody';
+import IconButton from '@mui/material/IconButton';
+import TableContainer from '@mui/material/TableContainer';
 
 import { paths } from 'src/routes/paths';
 
@@ -21,27 +21,27 @@ import axiosInstance, { endpoints } from 'src/utils/axios';
 
 import { useGetCategories } from 'src/api/category';
 
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
+import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
+  useTable,
   emptyRows,
+  TableNoData,
   getComparator,
+  TableSkeleton,
   TableEmptyRows,
   TableHeadCustom,
-  TableNoData,
-  TablePaginationCustom,
   TableSelectedAction,
-  TableSkeleton,
-  useTable,
+  TablePaginationCustom,
 } from 'src/components/table';
 
-import CategoryTableFiltersResult from '../category-table-filters-result';
 import CategoryTableRow from '../category-table-row';
-import CategoryTableToolbar from '../category-table-toolbar';
 import CreateCategoryDialog from '../create-category';
+import CategoryTableToolbar from '../category-table-toolbar';
+import CategoryTableFiltersResult from '../category-table-filters-result';
 
 // ----------------------------------------------------------------------
 
@@ -70,9 +70,15 @@ export default function CategoryListView() {
 
   const [filters, setFilters] = useState(defaultFilters);
 
-  const { categories, categoriesLoading, categoriesEmpty } = useGetCategories();
+  const [search, setSearch] = useState()
+
+
+
+  const { categories, categoriesLoading, categoriesEmpty } = useGetCategories({ ...(search && { search }) });
 
   const [editData, setEditData] = useState(null);
+
+
 
   const confirm = useBoolean();
   const upload = useBoolean();
@@ -141,8 +147,6 @@ export default function CategoryListView() {
   );
 
 
-
-
   // this is a code for delete a row
   const handleDeleteRow = useCallback(
     async (id) => {
@@ -178,6 +182,7 @@ export default function CategoryListView() {
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
+    setSearch();
   }, []);
 
   return (
@@ -213,7 +218,7 @@ export default function CategoryListView() {
             filters={filters}
             onFilters={handleFilters}
             publishOptions={PUBLISH_OPTIONS}
-
+            setSearch={setSearch}
           />
 
           {canReset && (

@@ -71,19 +71,25 @@ export default function UserListView() {
 
   const [tableData, setTableData] = useState([]);
 
+  const [search, setSearch] = useState();
   const [filters, setFilters] = useState(defaultFilters);
 
-  const { users, usersLoading, usersEmpty } = useGetUsers();
+  const [limit, setLimit] = useState(5)
+
+  const { users, usersLoading, usersEmpty, totalDocuments } = useGetUsers({ limit, expand: "true", ...(search && { search }) });
 
   const navigate = useNavigate();
 
   const confirm = useBoolean();
 
+  // code for pagination
+  const handlePageChange = useCallback((event, newPage) => {
+    // Call the original onChangePage function
+    table.onChangePage(event, newPage);
 
+    setLimit((newPage + 1) * table.rowsPerPage)
 
-
-
-
+  }, [table]);
 
 
   //  here i m fetching category data and set data
@@ -167,6 +173,7 @@ export default function UserListView() {
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
+    setSearch()
   }, []);
 
   return (
@@ -192,7 +199,7 @@ export default function UserListView() {
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
-              New Customer
+              New User
             </Button>
           }
           sx={{ mb: { xs: 3, md: 5 } }}
@@ -203,7 +210,9 @@ export default function UserListView() {
           <UserTableToolbar
             filters={filters}
             onFilters={handleFilters}
+            setSearch={setSearch}
           />
+
 
           {canReset && (
             <UserTableFiltersResult
@@ -292,10 +301,10 @@ export default function UserListView() {
 
           {/* pagination */}
           <TablePaginationCustom
-            count={dataFiltered.length}
+            count={totalDocuments}
             page={table.page}
             rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
+            onPageChange={handlePageChange}
             onRowsPerPageChange={table.onChangeRowsPerPage}
             //
             dense={table.dense}
@@ -346,9 +355,9 @@ function applyFilter({ inputData, comparator, filters }) {
   inputData = stabilizedThis.map((el) => el[0]);
 
   inputData = inputData.filter((user) => {
-    const nameMatch = name ? user.name.toLowerCase().includes(name.toLowerCase()) : true;
-    const emailAddressMatch = emailAddress ? user.email.toLowerCase().includes(emailAddress.toLowerCase()) : true;
-    const phoneNumberMatch = phoneNumber ? user.phone_no.toString().includes(phoneNumber.toString()) : true;
+    const nameMatch = name ? user?.name?.toLowerCase().includes(name.toLowerCase()) : true;
+    const emailAddressMatch = emailAddress ? user?.email?.toLowerCase().includes(emailAddress.toLowerCase()) : true;
+    const phoneNumberMatch = phoneNumber ? user?.phone_no?.toString().includes(phoneNumber.toString()) : true;
     return nameMatch || emailAddressMatch || phoneNumberMatch;
   });
 

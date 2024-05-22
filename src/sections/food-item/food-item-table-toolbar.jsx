@@ -15,6 +15,7 @@ import Iconify from 'src/components/iconify';
 export default function FoodItemTableToolbar({
   filters,
   onFilters,
+  setSearch,
   //
   categoryOptions,
 }) {
@@ -25,8 +26,9 @@ export default function FoodItemTableToolbar({
       onFilters('name', event.target.value);
       onFilters('description', event.target.value);
       onFilters('categoryName', event.target.value);
+      setSearch(event.target.value);
     },
-    [onFilters]
+    [onFilters, setSearch]
   );
 
   const handleFilterPublish = useCallback(
@@ -144,4 +146,5 @@ FoodItemTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   categoryOptions: PropTypes.array,
+  setSearch: PropTypes.func
 };

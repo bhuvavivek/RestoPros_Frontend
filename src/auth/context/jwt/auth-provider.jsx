@@ -24,28 +24,28 @@ const reducer = (state, action) => {
   if (action.type === 'INITIAL') {
     return {
       loading: false,
-      // user: action.payload.user,
+      user: action.payload.user,
       isAuthenticated: action.payload.isAuthenticated,
     };
   }
   if (action.type === 'LOGIN') {
     return {
       ...state,
-      // user: action.payload.user,
+      user: action.payload.user,
       isAuthenticated: true,
     };
   }
   if (action.type === 'REGISTER') {
     return {
       ...state,
-      // user: action.payload.user,
+      user: action.payload.user,
       isAuthenticated: true
     };
   }
   if (action.type === 'LOGOUT') {
     return {
       ...state,
-      // user: null,
+      user: null,
       isAuthenticated: false,
     };
   }
@@ -67,15 +67,15 @@ export function AuthProvider({ children }) {
         setSession(accessToken);
         console.log('inside a if')
 
-        // const response = await axios.get(endpoints.auth.me);
+        const response = await axios.get(endpoints.profile.userprofile);
 
-        // const { user } = response.data;
+        const { user } = response.data;
         dispatch({
           type: 'INITIAL',
           payload: {
-            // user: {
-            //   accessToken,
-            // },
+            user: {
+              accessToken,
+            },
             isAuthenticated: {
               isAuthenticated: true
             }
@@ -85,7 +85,7 @@ export function AuthProvider({ children }) {
         dispatch({
           type: 'INITIAL',
           payload: {
-            // user: null,
+            user: null,
             isAuthenticated: false
           },
         });
@@ -95,7 +95,7 @@ export function AuthProvider({ children }) {
       dispatch({
         type: 'INITIAL',
         payload: {
-          // user: null,
+          user: null,
           isAuthenticated: false
         },
       });
@@ -122,11 +122,11 @@ export function AuthProvider({ children }) {
     sessionStorage.setItem(STORAGE_KEY, token);
     dispatch({
       type: 'LOGIN',
-      // payload: {
-      //   user: {
-      //     token
-      //   },
-      // },
+      payload: {
+        user: {
+          token
+        },
+      },
     });
   }, []);
 

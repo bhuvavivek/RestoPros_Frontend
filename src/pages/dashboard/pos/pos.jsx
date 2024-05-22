@@ -4,6 +4,7 @@ import { PosListView } from "src/sections/pos/view";
 
 export default function PosEditDetailPage() {
 
+
   return (
     <>
       <Helmet>

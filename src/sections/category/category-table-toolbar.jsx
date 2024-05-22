@@ -12,6 +12,7 @@ import Iconify from 'src/components/iconify';
 export default function CategoryTableToolbar({
   filters,
   onFilters,
+  setSearch,
 }) {
 
 
@@ -19,8 +20,9 @@ export default function CategoryTableToolbar({
     (event) => {
       onFilters('name', event.target.value);
       onFilters('description', event.target.value);
+      setSearch(event.target.value);
     },
-    [onFilters]
+    [onFilters, setSearch]
   );
 
   return (
@@ -60,6 +62,5 @@ export default function CategoryTableToolbar({
 CategoryTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
-
-
+  setSearch: PropTypes.func
 };

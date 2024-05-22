@@ -1,4 +1,3 @@
-import { debounce } from 'lodash';
 import { enqueueSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
@@ -61,13 +60,14 @@ export default function PosListView({ id, sale }) {
 
   const [customerSearch, setCustomerSearch] = useState();
 
-  const { customers } = useGetCustomers({ search: customerSearch });
+  const { customers } = useGetCustomers({ limit: 50, ...(customerSearch && { search: customerSearch }) });
   const [open, setOpen] = useState(false);
 
-  const { pickedTable, setCustomerId, orderType, customerId, items, onReset, setPickedTable, setOrderType, onAddToCart } = useFoodCartContext()
+  const { pickedTable, setCustomerId, orderType, customerId, items, onReset, setPickedTable, setOrderType, onAddMultipleToCart, onClearItems } = useFoodCartContext()
 
   const [customerOptions, setCustomerOptions] = useState(customers);
-  const debouncedSetCustomerSearch = debounce(setCustomerSearch, 300);
+
+
 
   const [isKot, setIsKot] = useState(false)
   const handlesetIsKot = (value) => setIsKot(value);
@@ -78,6 +78,7 @@ export default function PosListView({ id, sale }) {
 
   useEffect(() => {
     if (id && sale) {
+      onClearItems()
       onReset();
       setPickedTable(sale.table);
       setOrderType(sale.type);
@@ -92,13 +93,12 @@ export default function PosListView({ id, sale }) {
           }
         }
       });
-      
-      filteredItems.forEach((item)=>{
-        onAddToCart(item)
-      })
+
+      console.log(filteredItems)
+      onAddMultipleToCart(filteredItems)
+
     }
   }, [id, sale]);
-
 
   useEffect(() => {
     if (customerSearch && customerSearch.trim() !== "") {
@@ -113,9 +113,12 @@ export default function PosListView({ id, sale }) {
   }, [customerSearch, customers])
 
 
+
   useEffect(() => {
-    if (Object.keys(pickedTable).length === 0 && !id) {
-      setOpen(true);
+    if (pickedTable) {
+      if (Object?.keys(pickedTable)?.length === 0 && !id) {
+        setOpen(true);
+      }
     }
   }, [pickedTable, id])
 
@@ -132,18 +135,31 @@ export default function PosListView({ id, sale }) {
 
   }
 
+
+  // function for createOrder
+
   const handleOrderSubmit = async () => {
     try {
       const Orders = items.map((item) => ({
         item_id: item._id,
         quantity: item.quantity
       }));
-      const response = await axiosInstance.post('/api/order/create', {
-        type: orderType,
-        table_id: pickedTable._id,
-        customer_id: customerId,
-        Orders
-      });
+
+      let response;
+
+      if (id && sale) {
+        response = await axiosInstance.post('/api/order/add-item', {
+          order_id: id,
+          orders: Orders
+        });
+      } else {
+        response = await axiosInstance.post('/api/order/create', {
+          type: orderType,
+          table_id: pickedTable._id,
+          customer_id: customerId,
+          Orders
+        });
+      }
 
       if (response.status === 201) {
         if (isKot) {
@@ -151,7 +167,10 @@ export default function PosListView({ id, sale }) {
           navigate(`/${orderId}/order-bill`)
           setIsKot(false);
         }
-        enqueueSnackbar('Order Created Successfully!!')
+        enqueueSnackbar(`Order ${id ? 'Updated' : 'Created'} Successfully!!`)
+        if (id) {
+          navigate(`/dashboard/sale/${id}/edit`)
+        }
         onReset()
       }
     } catch (error) {
@@ -197,11 +216,18 @@ export default function PosListView({ id, sale }) {
             sx={{ width: 300 }}
             getOptionLabel={(option) => option.name}
             renderInput={(params) => <TextField {...params} label="SelectCustomer" />}
-            onChange={(event, value) => setCustomerId(value?._id)} // replace console.log with your function to handle the selected customer
-            onInputChange={(event, newInputValue, reason) => {
-              if (reason !== 'select-option') {
-                debouncedSetCustomerSearch(newInputValue);
-              }
+            onChange={(event, value) => setCustomerId(value?._id)}
+            onInputChange={(event, newInputValue) => {
+              setCustomerSearch(newInputValue);
+            }}
+            filterOptions={(options, params) => {
+              const filtered = options.filter((option) => (
+                option.name?.toLowerCase().includes(params.inputValue.toLowerCase()) ||
+                option?.email?.toLowerCase().includes(params.inputValue.toLowerCase()) ||
+                option?.phone?.toString().includes(params.inputValue)
+              ));
+
+              return filtered;
             }}
           />
           <Button
