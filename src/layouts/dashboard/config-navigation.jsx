@@ -47,6 +47,7 @@ const ICONS = {
   foodItem: icon('ic_product'),
   service: icon('ic_label'),
   customer: icon('ic_user'),
+  report: icon('ic_banking')
 };
 
 // ----------------------------------------------------------------------
@@ -105,11 +106,16 @@ export function useNavData() {
             path: paths.dashboard.pos,
             icon: ICONS.ecommerce,
           },
-
           {
             title: t('order'),
             path: paths.dashboard.saleorder,
             icon: ICONS.order
+          },
+          // Report
+          {
+            title: t('report'),
+            path: paths.dashboard.report,
+            icon: ICONS.report
           },
           {
             title: t('customer'),

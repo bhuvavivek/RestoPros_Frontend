@@ -94,6 +94,10 @@ const UserPermissionPage = lazy(() => import('src/pages/dashboard/userpermission
 // SaleOrder
 const SaleOrderPage = lazy(() => import('src/pages/dashboard/saleorder'))
 
+// Sold Report
+
+const SoldReport = lazy(() => import('src/pages/dashboard/sold-report'))
+
 
 export const dashboardRoutes = [
   {
@@ -183,6 +187,10 @@ export const dashboardRoutes = [
           { path: 'new', element: <ProductCreatePage /> },
           { path: ':id/edit', element: <ProductEditPage /> },
         ],
+      },
+      {
+        path: 'sold-report',
+        element: <SoldReport />
       },
       {
         path: 'order',

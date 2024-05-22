@@ -1,4 +1,4 @@
-import { Grid, } from "@mui/material";
+import { Autocomplete, Grid, TextField, } from "@mui/material";
 import { Container } from "@mui/system";
 
 import { useGetDashboardCount, useGetSaleOrderCount } from "src/api/dashboard";
@@ -6,10 +6,19 @@ import { useGetSales } from "src/api/sales";
 
 import { useSettingsContext } from "src/components/settings";
 
+import { DateRangePicker } from "@mui/lab";
 import { useGetOverall } from "src/api/report";
 import DashboardRecentActivity from "../dashboard-recent-activity";
 import DashboardWidgetSummery from "../dashboard-widget-summery";
 
+
+const DurationOptions = [
+  { label: 'Daily', value: 'daily' },
+  { label: 'Weekly', value: 'weekly' },
+  { label: 'Monthly', value: 'monthly' },
+  { label: 'Yearly', value: 'yearly' },
+  { label: 'Custom', value: 'custom' }
+]
 
 export default function DashboardView() {
 
@@ -23,7 +32,16 @@ export default function DashboardView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'} >
       <Grid container columnSpacing={3} rowGap={3}>
-
+        <Grid item xs={12}>
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={DurationOptions}
+            sx={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Duration" />}
+          />
+          <DateRangePicker localeText={{ start: 'Start-Date', end: 'End-date' }} />
+        </Grid>
         <Grid item xs={12} md={4} >
           <DashboardWidgetSummery
             title="Total Active Users"
