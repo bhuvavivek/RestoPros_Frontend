@@ -82,9 +82,9 @@ export default function SaleDetailsItems({
         }}
       >
         <Scrollbar>
-          {items.map((item) => (
+          {items?.map((item) => (
             <Stack
-              key={item._id}
+              key={item?._id}
               direction="row"
               alignItems="center"
               sx={{
@@ -108,7 +108,7 @@ export default function SaleDetailsItems({
               <Box sx={{ typography: 'body2' }}>x{item.quantity}</Box>
 
               <Box sx={{ width: 110, textAlign: 'right', typography: 'subtitle2' }}>
-                {fCurrency(item.price)}
+                {fCurrency(item?.price)}
               </Box>
             </Stack>
           ))}

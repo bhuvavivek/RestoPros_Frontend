@@ -42,7 +42,7 @@ export function useGetOverall(quaryParams) {
 
   const memoizedValue = useMemo(
     () => ({
-      overAll: data?.data || [],
+      overAll: data?.data[0] || [],
       overAllLoading: isLoading,
       overAllError: error,
       overAllValidating: isValidating,

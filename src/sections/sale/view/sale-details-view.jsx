@@ -50,7 +50,7 @@ export default function SaleDetailsView({ id }) {
         <Grid xs={12} md={8}>
           <Stack spacing={3} direction={{ xs: 'column-reverse', md: 'column' }}>
             <OrderDetailsItems
-              items={sale.orderList}
+              items={sale?.orderList}
               taxes={sale?.tax}
               tip={sale?.tip}
               discount={sale?.discount}
