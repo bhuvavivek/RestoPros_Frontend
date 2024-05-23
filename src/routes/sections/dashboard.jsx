@@ -99,6 +99,13 @@ const SaleOrderPage = lazy(() => import('src/pages/dashboard/saleorder'))
 const SoldReport = lazy(() => import('src/pages/dashboard/sold-report'))
 
 
+// PermissionRoute ;
+
+const PermissionGuard = lazy(() => import('src/auth/guard/permission-guard'))
+
+
+
+
 export const dashboardRoutes = [
   {
     path: 'dashboard',
@@ -133,7 +140,9 @@ export const dashboardRoutes = [
         element: <CategoryPage />
       }, {
         path: 'food-item',
-        element: <FoodItemPage />
+        element: <PermissionGuard permission='MENU'>
+          <FoodItemPage />
+        </PermissionGuard>
       },
       {
         path: 'pos',
@@ -160,6 +169,7 @@ export const dashboardRoutes = [
       },
       {
         path: 'users',
+        element: <PermissionGuard permission='USER'><Outlet /></PermissionGuard>,
         children: [
           { element: <UserDetailsPage />, index: true },
           { path: 'new', element: <UserNewPage /> },

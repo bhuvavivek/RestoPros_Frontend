@@ -5,9 +5,9 @@ import MainLayout from 'src/layouts/main';
 // import { PATH_AFTER_LOGIN } from 'src/config-global';
 import { authRoutes } from './auth';
 import { authDemoRoutes } from './auth-demo';
-import { componentsRoutes } from './components';
 import { dashboardRoutes } from './dashboard';
 import { HomePage, mainRoutes } from './main';
+import { componentsRoutes } from './components';
 
 // ----------------------------------------------------------------------
 

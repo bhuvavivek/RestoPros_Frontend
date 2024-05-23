@@ -10,7 +10,9 @@ export default function SaleOrderItem({ order, setProgress }) {
   const [itemCheck, setItemCheck] = useState(false);
   const handleCheck = async (orderId) => {
     try {
-      const response = await axiosInstance.patch(endpoints.editOrder.editStatus(orderId));
+      const response = await axiosInstance.patch(endpoints.editOrder.editStatus(orderId), {
+        status: "completed"
+      });
       if (response.status === 200) {
         setItemCheck(true)
       }

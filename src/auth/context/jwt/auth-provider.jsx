@@ -15,7 +15,7 @@ import { isValidToken, setSession } from './utils';
 // ----------------------------------------------------------------------
 
 const initialState = {
-  // user: null,
+  user: null,
   loading: true,
   isAuthenticated: false,
 };
@@ -65,7 +65,6 @@ export function AuthProvider({ children }) {
 
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
-        console.log('inside a if')
 
         const response = await axios.get(endpoints.profile.userprofile);
 
@@ -74,6 +73,7 @@ export function AuthProvider({ children }) {
           type: 'INITIAL',
           payload: {
             user: {
+              ...user,
               accessToken,
             },
             isAuthenticated: {
@@ -173,7 +173,7 @@ export function AuthProvider({ children }) {
 
   const memoizedValue = useMemo(
     () => ({
-      // user: state.user,
+      user: state.user,
       method: 'jwt',
       loading: status === 'loading',
       authenticated: status === 'authenticated',
@@ -183,7 +183,7 @@ export function AuthProvider({ children }) {
       register,
       logout,
     }),
-    [login, logout, register, status]
+    [login, logout, register, status, state.user]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
