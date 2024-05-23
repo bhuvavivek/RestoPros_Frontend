@@ -10,6 +10,8 @@ import Router from 'src/routes/sections';
 
 import ThemeProvider from 'src/theme';
 
+import { useEffect } from 'react';
+
 import { LocalizationProvider } from 'src/locales';
 
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
@@ -22,6 +24,7 @@ import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
 import { AuthProvider } from 'src/auth/context/jwt';
 import { CheckoutProvider } from 'src/sections/checkout/context';
 import { FoodCartProvider } from 'src/sections/pos/context';
+import socketService from './sockets/socket';
 // import { AuthProvider } from 'src/auth/context/auth0';
 // import { AuthProvider } from 'src/auth/context/amplify';
 // import { AuthProvider } from 'src/auth/context/firebase';
@@ -42,6 +45,15 @@ export default function App() {
   console.info(`%c${charAt}`, 'color: #5BE49B');
 
   useScrollToTop();
+
+
+  useEffect(() => {
+    socketService.connect()
+
+    return () => {
+      socketService.disconnect();
+    }
+  }, [])
 
   return (
     <AuthProvider>
