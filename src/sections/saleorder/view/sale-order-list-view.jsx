@@ -1,30 +1,53 @@
 
-import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 
 import { paths } from 'src/routes/paths';
 
-import { useGetSales } from 'src/api/sales';
 
-import { useSettingsContext } from 'src/components/settings';
-import { LoadingScreen } from 'src/components/loading-screen';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { LoadingScreen } from 'src/components/loading-screen';
+import { useSettingsContext } from 'src/components/settings';
 
+import { useEffect, useState } from 'react';
+import socketService from '../../../sockets/socket';
 import SaleOrderList from '../sale-order-list';
 
 export default function SaleOrderListView() {
   const settings = useSettingsContext()
 
 
-  const { sales, salesLoading } = useGetSales({
-    expand: true,
-    orderList: true,
-    status: 'pending'
-  })
+  const [sales, setSales] = useState([]);
+  const [salesLoading, setSalesLoading] = useState(true);
+
+  // const { sales, salesLoading } = useGetSales({
+  //   expand: true,
+  //   orderList: true,
+  //   status: 'pending'
+  // })
+
+  useEffect(() => {
+
+    // Emit an event to request the orders
+    socketService.emit('get-order');
+
+    socketService.on('Orders', (Orders) => {
+      console.log(Orders)
+      setSales(Orders)
+      setSalesLoading(false);
+    })
+
+    // return () => {
+    //   socketService.off('orders');
+    //   socketService.disconnect();
+    // }
+  }, [])
+
 
   if (salesLoading) {
     return <LoadingScreen />
   }
+
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>

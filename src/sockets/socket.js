@@ -10,7 +10,7 @@ class SocketService {
   connect() {
     if (!this.socket) {
       this.socket = io(SOCKET_URL, {
-        path: '/Socket-new',
+        path: '/socket-new',
         transports: ['websocket'],
       });
 
@@ -20,8 +20,8 @@ class SocketService {
       });
 
       // handle connection error
-      this.socket.on('connect_error', (err) => {
-        console.error('Socket connection error: ', err);
+      this.socket.on('connect_error', (error) => {
+        console.error('Socket connection error: ', error);
       });
     }
   }
@@ -43,6 +43,15 @@ class SocketService {
       this.socket.off(event, callback);
     }
   }
+
+
+  emit(event, data) {
+    if (this.socket) {
+      this.socket.emit(event, data);
+    }
+  }
+
+
 }
 
 const socketService = new SocketService();
