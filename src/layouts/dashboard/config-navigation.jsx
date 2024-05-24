@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 
 import { paths } from 'src/routes/paths';
 
+import { AuthContext } from 'src/auth/context/jwt';
 import { useTranslate } from 'src/locales';
 
 import Iconify from 'src/components/iconify';
@@ -56,349 +57,372 @@ const ICONS = {
 export function useNavData() {
   const { t } = useTranslate();
 
+  const { user } = useContext(AuthContext);
+
 
   const data = useMemo(
-    () => [
-      // OVERVIEW
-      // ----------------------------------------------------------------------
-      {
-        subheader: t('overview'),
-        items: [
-          {
-            title: t('Dashboard'),
-            path: paths.dashboard.mainDashboard,
-            icon: ICONS.dashboard,
-          },
+    () => {
 
-          // Sale
-          {
-            title: t('Sale'),
-            path: paths.dashboard.sale.root,
-            icon: ICONS.sale,
-            children: [
-              { title: t('list'), path: paths.dashboard.sale.root },
-            ],
-          },
+      const items = [
+        // OVERVIEW
+        // ----------------------------------------------------------------------
+        {
+          subheader: t('overview'),
+          items: [
+            {
+              title: t('Dashboard'),
+              path: paths.dashboard.mainDashboard,
+              icon: ICONS.dashboard,
+            },
 
-          // category
-          {
-            title: t('category'),
-            path: paths.dashboard.category,
-            icon: ICONS.folder
-          },
+            // Sale
+            {
+              title: t('Sale'),
+              path: paths.dashboard.sale.root,
+              icon: ICONS.sale,
+              permission: 'ORDER',
+              children: [
+                { title: t('list'), path: paths.dashboard.sale.root },
+              ],
+            },
 
-          // Food Items
-          {
-            title: t('foodItem'),
-            path: paths.dashboard.foodItem,
-            icon: ICONS.foodItem
-          },
-          // service
-          {
-            title: t('service'),
-            path: paths.dashboard.service,
-            icon: ICONS.service
-          },
+            // category
+            {
+              title: t('category'),
+              path: paths.dashboard.category,
+              icon: ICONS.folder,
+              permission: 'MENU',
+            },
 
-          // pos,
-          {
-            title: t('pos'),
-            path: paths.dashboard.pos,
-            icon: ICONS.ecommerce,
-          },
-          {
-            title: t('order'),
-            path: paths.dashboard.saleorder,
-            icon: ICONS.order
-          },
-          // Report
-          {
-            title: t('report'),
-            path: paths.dashboard.report,
-            icon: ICONS.report
-          },
-          {
-            title: t('customer'),
-            path: paths.dashboard.customer,
-            icon: ICONS.customer
-          }, {
-            title: t('userPermission'),
-            path: paths.dashboard.userpermission.root,
-            icon: ICONS.analytics,
-            children: [
-              { title: t('list'), path: paths.dashboard.userpermission.root },
-            ]
-          },
-          {
-            title: t('User'),
-            path: paths.dashboard.users.root,
-            icon: ICONS.analytics,
-            children: [
-              { title: t('list'), path: paths.dashboard.users.root },
-              { title: t('add'), path: paths.dashboard.users.new },
-            ]
-          },
-          {
-            title: t('app'),
-            path: paths.dashboard.root,
-            icon: ICONS.dashboard,
-          },
-          {
-            title: t('ecommerce'),
-            path: paths.dashboard.general.ecommerce,
-            icon: ICONS.ecommerce,
-          },
-          {
-            title: t('analytics'),
-            path: paths.dashboard.general.analytics,
-            icon: ICONS.analytics,
-          },
-          {
-            title: t('banking'),
-            path: paths.dashboard.general.banking,
-            icon: ICONS.banking,
-          },
-          {
-            title: t('booking'),
-            path: paths.dashboard.general.booking,
-            icon: ICONS.booking,
-          },
-          {
-            title: t('file'),
-            path: paths.dashboard.general.file,
-            icon: ICONS.file,
-          },
-        ],
-      },
+            // Food Items
+            {
+              title: t('menu'),
+              path: paths.dashboard.foodItem,
+              icon: ICONS.foodItem,
+              permission: 'MENU',
+            },
+            // service
+            {
+              title: t('service'),
+              path: paths.dashboard.service,
+              icon: ICONS.service,
+              permission: "TABLE"
+            },
 
-      // MANAGEMENT
-      // ----------------------------------------------------------------------
-      {
-        subheader: t('management'),
-        items: [
-          // USER
-          {
-            title: t('user'),
-            path: paths.dashboard.user.root,
-            icon: ICONS.user,
-            children: [
-              { title: t('profile'), path: paths.dashboard.user.root },
-              { title: t('cards'), path: paths.dashboard.user.cards },
-              { title: t('list'), path: paths.dashboard.user.list },
-              { title: t('create'), path: paths.dashboard.user.new },
-              { title: t('edit'), path: paths.dashboard.user.demo.edit },
-              { title: t('account'), path: paths.dashboard.user.account },
-            ],
-          },
+            // pos,
+            {
+              title: t('pos'),
+              path: paths.dashboard.pos,
+              icon: ICONS.ecommerce,
+              permission: "ORDER"
+            },
+            {
+              title: t('order'),
+              path: paths.dashboard.saleorder,
+              icon: ICONS.order,
+              permission: "ORDER"
+            },
+            // Report
+            {
+              title: t('report'),
+              path: paths.dashboard.report,
+              icon: ICONS.report
+            },
+            {
+              title: t('customer'),
+              path: paths.dashboard.customer,
+              icon: ICONS.customer
+            }, {
+              title: t('userPermission'),
+              path: paths.dashboard.userpermission.root,
+              icon: ICONS.analytics,
+              children: [
+                { title: t('list'), path: paths.dashboard.userpermission.root },
+              ],
+              permission: "USER"
+            },
+            {
+              title: t('User'),
+              path: paths.dashboard.users.root,
+              icon: ICONS.analytics,
+              children: [
+                { title: t('list'), path: paths.dashboard.users.root },
+                { title: t('add'), path: paths.dashboard.users.new },
+              ],
+              permission: "USER"
+            },
+            {
+              title: t('app'),
+              path: paths.dashboard.root,
+              icon: ICONS.dashboard,
+            },
+            {
+              title: t('ecommerce'),
+              path: paths.dashboard.general.ecommerce,
+              icon: ICONS.ecommerce,
+            },
+            {
+              title: t('analytics'),
+              path: paths.dashboard.general.analytics,
+              icon: ICONS.analytics,
+            },
+            {
+              title: t('banking'),
+              path: paths.dashboard.general.banking,
+              icon: ICONS.banking,
+            },
+            {
+              title: t('booking'),
+              path: paths.dashboard.general.booking,
+              icon: ICONS.booking,
+            },
+            {
+              title: t('file'),
+              path: paths.dashboard.general.file,
+              icon: ICONS.file,
+            },
+          ],
+        },
 
-          // PRODUCT
-          {
-            title: t('product'),
-            path: paths.dashboard.product.root,
-            icon: ICONS.product,
-            children: [
-              { title: t('list'), path: paths.dashboard.product.root },
-              {
-                title: t('details'),
-                path: paths.dashboard.product.demo.details,
-              },
-              { title: t('create'), path: paths.dashboard.product.new },
-              { title: t('edit'), path: paths.dashboard.product.demo.edit },
-            ],
-          },
+        // MANAGEMENT
+        // ----------------------------------------------------------------------
+        {
+          subheader: t('management'),
+          items: [
+            // USER
+            {
+              title: t('user'),
+              path: paths.dashboard.user.root,
+              icon: ICONS.user,
+              children: [
+                { title: t('profile'), path: paths.dashboard.user.root },
+                { title: t('cards'), path: paths.dashboard.user.cards },
+                { title: t('list'), path: paths.dashboard.user.list },
+                { title: t('create'), path: paths.dashboard.user.new },
+                { title: t('edit'), path: paths.dashboard.user.demo.edit },
+                { title: t('account'), path: paths.dashboard.user.account },
+              ],
+            },
 
-          // ORDER
-          {
-            title: t('order'),
-            path: paths.dashboard.order.root,
-            icon: ICONS.order,
-            children: [
-              { title: t('list'), path: paths.dashboard.order.root },
-              { title: t('details'), path: paths.dashboard.order.demo.details },
-            ],
-          },
+            // PRODUCT
+            {
+              title: t('product'),
+              path: paths.dashboard.product.root,
+              icon: ICONS.product,
+              children: [
+                { title: t('list'), path: paths.dashboard.product.root },
+                {
+                  title: t('details'),
+                  path: paths.dashboard.product.demo.details,
+                },
+                { title: t('create'), path: paths.dashboard.product.new },
+                { title: t('edit'), path: paths.dashboard.product.demo.edit },
+              ],
+            },
 
-          // INVOICE
-          {
-            title: t('invoice'),
-            path: paths.dashboard.invoice.root,
-            icon: ICONS.invoice,
-            children: [
-              { title: t('list'), path: paths.dashboard.invoice.root },
-              {
-                title: t('details'),
-                path: paths.dashboard.invoice.demo.details,
-              },
-              { title: t('create'), path: paths.dashboard.invoice.new },
-              { title: t('edit'), path: paths.dashboard.invoice.demo.edit },
-            ],
-          },
+            // ORDER
+            {
+              title: t('order'),
+              path: paths.dashboard.order.root,
+              icon: ICONS.order,
+              children: [
+                { title: t('list'), path: paths.dashboard.order.root },
+                { title: t('details'), path: paths.dashboard.order.demo.details },
+              ],
+            },
 
-          // BLOG
-          {
-            title: t('blog'),
-            path: paths.dashboard.post.root,
-            icon: ICONS.blog,
-            children: [
-              { title: t('list'), path: paths.dashboard.post.root },
-              { title: t('details'), path: paths.dashboard.post.demo.details },
-              { title: t('create'), path: paths.dashboard.post.new },
-              { title: t('edit'), path: paths.dashboard.post.demo.edit },
-            ],
-          },
+            // INVOICE
+            {
+              title: t('invoice'),
+              path: paths.dashboard.invoice.root,
+              icon: ICONS.invoice,
+              children: [
+                { title: t('list'), path: paths.dashboard.invoice.root },
+                {
+                  title: t('details'),
+                  path: paths.dashboard.invoice.demo.details,
+                },
+                { title: t('create'), path: paths.dashboard.invoice.new },
+                { title: t('edit'), path: paths.dashboard.invoice.demo.edit },
+              ],
+            },
 
-          // JOB
-          {
-            title: t('job'),
-            path: paths.dashboard.job.root,
-            icon: ICONS.job,
-            children: [
-              { title: t('list'), path: paths.dashboard.job.root },
-              { title: t('details'), path: paths.dashboard.job.demo.details },
-              { title: t('create'), path: paths.dashboard.job.new },
-              { title: t('edit'), path: paths.dashboard.job.demo.edit },
-            ],
-          },
+            // BLOG
+            {
+              title: t('blog'),
+              path: paths.dashboard.post.root,
+              icon: ICONS.blog,
+              children: [
+                { title: t('list'), path: paths.dashboard.post.root },
+                { title: t('details'), path: paths.dashboard.post.demo.details },
+                { title: t('create'), path: paths.dashboard.post.new },
+                { title: t('edit'), path: paths.dashboard.post.demo.edit },
+              ],
+            },
 
-          // TOUR
-          {
-            title: t('tour'),
-            path: paths.dashboard.tour.root,
-            icon: ICONS.tour,
-            children: [
-              { title: t('list'), path: paths.dashboard.tour.root },
-              { title: t('details'), path: paths.dashboard.tour.demo.details },
-              { title: t('create'), path: paths.dashboard.tour.new },
-              { title: t('edit'), path: paths.dashboard.tour.demo.edit },
-            ],
-          },
+            // JOB
+            {
+              title: t('job'),
+              path: paths.dashboard.job.root,
+              icon: ICONS.job,
+              children: [
+                { title: t('list'), path: paths.dashboard.job.root },
+                { title: t('details'), path: paths.dashboard.job.demo.details },
+                { title: t('create'), path: paths.dashboard.job.new },
+                { title: t('edit'), path: paths.dashboard.job.demo.edit },
+              ],
+            },
 
-          // FILE MANAGER
-          {
-            title: t('file_manager'),
-            path: paths.dashboard.fileManager,
-            icon: ICONS.folder,
-          },
+            // TOUR
+            {
+              title: t('tour'),
+              path: paths.dashboard.tour.root,
+              icon: ICONS.tour,
+              children: [
+                { title: t('list'), path: paths.dashboard.tour.root },
+                { title: t('details'), path: paths.dashboard.tour.demo.details },
+                { title: t('create'), path: paths.dashboard.tour.new },
+                { title: t('edit'), path: paths.dashboard.tour.demo.edit },
+              ],
+            },
 
-          // MAIL
-          {
-            title: t('mail'),
-            path: paths.dashboard.mail,
-            icon: ICONS.mail,
-            info: <Label color="error">+32</Label>,
-          },
+            // FILE MANAGER
+            {
+              title: t('file_manager'),
+              path: paths.dashboard.fileManager,
+              icon: ICONS.folder,
+            },
 
-          // CHAT
-          {
-            title: t('chat'),
-            path: paths.dashboard.chat,
-            icon: ICONS.chat,
-          },
+            // MAIL
+            {
+              title: t('mail'),
+              path: paths.dashboard.mail,
+              icon: ICONS.mail,
+              info: <Label color="error">+32</Label>,
+            },
 
-          // CALENDAR
-          {
-            title: t('calendar'),
-            path: paths.dashboard.calendar,
-            icon: ICONS.calendar,
-          },
+            // CHAT
+            {
+              title: t('chat'),
+              path: paths.dashboard.chat,
+              icon: ICONS.chat,
+            },
 
-          // KANBAN
-          {
-            title: t('kanban'),
-            path: paths.dashboard.kanban,
-            icon: ICONS.kanban,
-          },
-        ],
-      },
+            // CALENDAR
+            {
+              title: t('calendar'),
+              path: paths.dashboard.calendar,
+              icon: ICONS.calendar,
+            },
 
-      // DEMO MENU STATES
-      {
-        subheader: t(t('other_cases')),
-        items: [
-          {
-            // default roles : All roles can see this entry.
-            // roles: ['user'] Only users can see this item.
-            // roles: ['admin'] Only admin can see this item.
-            // roles: ['admin', 'manager'] Only admin/manager can see this item.
-            // Reference from 'src/guards/RoleBasedGuard'.
-            title: t('item_by_roles'),
-            path: paths.dashboard.permission,
-            icon: ICONS.lock,
-            roles: ['admin', 'manager'],
-            caption: t('only_admin_can_see_this_item'),
-          },
-          {
-            title: t('menu_level'),
-            path: '#/dashboard/menu_level',
-            icon: ICONS.menuItem,
-            children: [
-              {
-                title: t('menu_level_1a'),
-                path: '#/dashboard/menu_level/menu_level_1a',
-              },
-              {
-                title: t('menu_level_1b'),
-                path: '#/dashboard/menu_level/menu_level_1b',
-                children: [
-                  {
-                    title: t('menu_level_2a'),
-                    path: '#/dashboard/menu_level/menu_level_1b/menu_level_2a',
-                  },
-                  {
-                    title: t('menu_level_2b'),
-                    path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b',
-                    children: [
-                      {
-                        title: t('menu_level_3a'),
-                        path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3a',
-                      },
-                      {
-                        title: t('menu_level_3b'),
-                        path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3b',
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            title: t('item_disabled'),
-            path: '#disabled',
-            icon: ICONS.disabled,
-            disabled: true,
-          },
-          {
-            title: t('item_label'),
-            path: '#label',
-            icon: ICONS.label,
-            info: (
-              <Label color="info" startIcon={<Iconify icon="solar:bell-bing-bold-duotone" />}>
-                NEW
-              </Label>
-            ),
-          },
-          {
-            title: t('item_caption'),
-            path: '#caption',
-            icon: ICONS.menuItem,
-            caption:
-              'Quisque malesuada placerat nisl. In hac habitasse platea dictumst. Cras id dui. Pellentesque commodo eros a enim. Morbi mollis tellus ac sapien.',
-          },
-          {
-            title: t('item_external_link'),
-            path: 'https://www.google.com/',
-            icon: ICONS.external,
-          },
-          {
-            title: t('blank'),
-            path: paths.dashboard.blank,
-            icon: ICONS.blank,
-          },
-        ],
-      },
-    ],
-    [t]
+            // KANBAN
+            {
+              title: t('kanban'),
+              path: paths.dashboard.kanban,
+              icon: ICONS.kanban,
+            },
+          ],
+        },
+
+        // DEMO MENU STATES
+        {
+          subheader: t(t('other_cases')),
+          items: [
+            {
+              // default roles : All roles can see this entry.
+              // roles: ['user'] Only users can see this item.
+              // roles: ['admin'] Only admin can see this item.
+              // roles: ['admin', 'manager'] Only admin/manager can see this item.
+              // Reference from 'src/guards/RoleBasedGuard'.
+              title: t('item_by_roles'),
+              path: paths.dashboard.permission,
+              icon: ICONS.lock,
+              roles: ['admin', 'manager'],
+              caption: t('only_admin_can_see_this_item'),
+            },
+            {
+              title: t('menu_level'),
+              path: '#/dashboard/menu_level',
+              icon: ICONS.menuItem,
+              children: [
+                {
+                  title: t('menu_level_1a'),
+                  path: '#/dashboard/menu_level/menu_level_1a',
+                },
+                {
+                  title: t('menu_level_1b'),
+                  path: '#/dashboard/menu_level/menu_level_1b',
+                  children: [
+                    {
+                      title: t('menu_level_2a'),
+                      path: '#/dashboard/menu_level/menu_level_1b/menu_level_2a',
+                    },
+                    {
+                      title: t('menu_level_2b'),
+                      path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b',
+                      children: [
+                        {
+                          title: t('menu_level_3a'),
+                          path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3a',
+                        },
+                        {
+                          title: t('menu_level_3b'),
+                          path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3b',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              title: t('item_disabled'),
+              path: '#disabled',
+              icon: ICONS.disabled,
+              disabled: true,
+            },
+            {
+              title: t('item_label'),
+              path: '#label',
+              icon: ICONS.label,
+              info: (
+                <Label color="info" startIcon={<Iconify icon="solar:bell-bing-bold-duotone" />}>
+                  NEW
+                </Label>
+              ),
+            },
+            {
+              title: t('item_caption'),
+              path: '#caption',
+              icon: ICONS.menuItem,
+              caption:
+                'Quisque malesuada placerat nisl. In hac habitasse platea dictumst. Cras id dui. Pellentesque commodo eros a enim. Morbi mollis tellus ac sapien.',
+            },
+            {
+              title: t('item_external_link'),
+              path: 'https://www.google.com/',
+              icon: ICONS.external,
+            },
+            {
+              title: t('blank'),
+              path: paths.dashboard.blank,
+              icon: ICONS.blank,
+            },
+          ],
+        }
+      ]
+
+      // Filter items based on user permissions
+      if (user?.type !== 'admin') {
+        items.forEach((item) => {
+          item.items = item.items.filter((subItem) => !subItem.permission || user.permissions?.includes(subItem.permission));
+        });
+      }
+
+      return items;
+
+    },
+    [t, user]
   );
 
   return data;

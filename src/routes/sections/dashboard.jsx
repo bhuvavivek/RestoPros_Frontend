@@ -128,6 +128,7 @@ export const dashboardRoutes = [
       { path: 'mainDashboard', element: <DashboardPage /> },
       {
         path: 'sale',
+        element: <PermissionGuard permission='ORDER'><Outlet /></PermissionGuard>,
         children: [
           { element: <SaleListPage />, index: true },
           { path: 'list', element: <SaleListPage /> },
@@ -137,7 +138,7 @@ export const dashboardRoutes = [
       },
       {
         path: 'category',
-        element: <CategoryPage />
+        element: <PermissionGuard permission='MENU'><CategoryPage /></PermissionGuard>
       }, {
         path: 'food-item',
         element: <PermissionGuard permission='MENU'>
@@ -146,11 +147,11 @@ export const dashboardRoutes = [
       },
       {
         path: 'pos',
-        element: <PosDetailsPage />
+        element: <PermissionGuard permission='ORDER'><PosDetailsPage /></PermissionGuard>,
       },
       {
         path: 'service',
-        element: <ServicePage />
+        element: <PermissionGuard permission='TABLE'><ServicePage /> </PermissionGuard>
       },
       {
         path: 'customer',
@@ -158,12 +159,12 @@ export const dashboardRoutes = [
       },
       {
         path: 'sale-orders',
-        element: <SaleOrderPage />
+        element: <PermissionGuard permission='ORDER'><SaleOrderPage /></PermissionGuard>,
       },
       {
         path: 'user-permission',
         children: [
-          { element: <UserPermissionPage />, index: true },
+          { element: <PermissionGuard permission='USER'><UserPermissionPage /></PermissionGuard>, index: true },
         ]
 
       },

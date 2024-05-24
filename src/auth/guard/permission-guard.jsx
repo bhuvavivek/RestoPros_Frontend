@@ -11,7 +11,7 @@ function PermissionGuard({ children, permission }) {
   const [checked, setChecked] = useState(false);
 
   const check = useCallback(() => {
-    if (!user?.permissions?.includes(permission)) {
+    if (user?.type !== 'admin' && (!user?.permissions?.includes(permission))) {
       navigate("/dashboard/mainDashboard");
     } else {
       setChecked(true);
@@ -22,9 +22,12 @@ function PermissionGuard({ children, permission }) {
     check();
   }, [check]);
 
-  if (!checked) {
+
+
+  if (user?.type !== 'admin' && !checked) {
     return null;
   }
+
 
   return <>{children}</>;
 }

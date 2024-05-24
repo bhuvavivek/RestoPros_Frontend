@@ -45,12 +45,19 @@ class SocketService {
   }
 
 
-  emit(event, data) {
+  emit(event, data, callback) {
     if (this.socket) {
-      this.socket.emit(event, data);
+      this.socket.emit(event, data, callback);
     }
   }
 
+  isConnected() {
+    return this.socket && this.socket.connected;
+  }
+
+  getSocket() {
+    return this.socket;
+  }
 
 }
 
