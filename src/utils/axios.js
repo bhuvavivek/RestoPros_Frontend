@@ -88,7 +88,7 @@ export const endpoints = {
   sales: {
     list: '/api/order',
     detail: (id) => `/api/order/${id}`,
-    addItem: `/api/order/add-item`,
+    addItem: (id) => `/api/order/${id}`,
   },
   role: {
     list: '/api/role/get-roles',
@@ -108,8 +108,6 @@ export const endpoints = {
   },
   report: {
     mostSold: '/api/report/most-sold',
-    overAll: '/api/report/overall'
-
-
-  }
+    overAll: '/api/report/overall',
+  },
 };

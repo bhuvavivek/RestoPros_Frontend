@@ -21,8 +21,8 @@ import { useGetQueryParamsData } from 'src/hooks/use-query';
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
 import { useGetCategories } from 'src/api/category';
-
 import { useGetMostSoldReport } from 'src/api/report';
+
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import Iconify from 'src/components/iconify';
@@ -39,6 +39,7 @@ import {
   TableSkeleton,
   useTable,
 } from 'src/components/table';
+
 import SoldReportTableFiltersResult from '../sold-report-filters-result';
 import SoldReportTableRow from '../sold-report-table-row';
 import SoldReportTableToolbar from '../sold-report-table-toolbar';

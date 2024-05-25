@@ -130,6 +130,10 @@ export function FoodCartProvider({ children }) {
           newItem.quantity = 1;
         }
 
+        if (newItem.quantity) {
+          newItem.quantity = 1;
+        }
+
         const existingItemIndex = updatedItems.findIndex(item => item._id === newItem._id);
         if (existingItemIndex !== -1) {
           // If the item already exists in the cart, increase its quantity

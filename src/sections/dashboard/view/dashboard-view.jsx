@@ -1,15 +1,15 @@
-import { Autocomplete, Grid, TextField, } from "@mui/material";
 import { Container } from "@mui/system";
+import { DateRangePicker } from "@mui/lab";
+import { Grid, TextField, Autocomplete, } from "@mui/material";
 
-import { useGetDashboardCount, useGetSaleOrderCount } from "src/api/dashboard";
 import { useGetSales } from "src/api/sales";
+import { useGetOverall } from "src/api/report";
+import { useGetDashboardCount, useGetSaleOrderCount } from "src/api/dashboard";
 
 import { useSettingsContext } from "src/components/settings";
 
-import { DateRangePicker } from "@mui/lab";
-import { useGetOverall } from "src/api/report";
-import DashboardRecentActivity from "../dashboard-recent-activity";
 import DashboardWidgetSummery from "../dashboard-widget-summery";
+import DashboardRecentActivity from "../dashboard-recent-activity";
 
 
 const DurationOptions = [

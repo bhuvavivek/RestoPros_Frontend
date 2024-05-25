@@ -11,7 +11,7 @@ import { Stack } from '@mui/system';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import axiosInstance from 'src/utils/axios';
+import axiosInstance, { endpoints } from 'src/utils/axios';
 
 import { useGetCategories } from 'src/api/category';
 import { useGetCustomers } from 'src/api/customers';
@@ -80,23 +80,18 @@ export default function PosListView({ id, sale }) {
     if (id && sale) {
       onClearItems()
       onReset();
-      setPickedTable(sale.table);
-      setOrderType(sale.type);
-      setCustomerId(sale.customer?._id);
+      setPickedTable(sale?.table);
+      setOrderType(sale?.type);
+      setCustomerId(sale?.customer?._id);
 
       const filteredItems = [];
       sale.orderList?.forEach((item) => {
-        const foodItem = FoodItems.find((menuItem) => menuItem._id === item.item_id);
-        if (foodItem) {
-          for (let i = 0; i < item.quantity; i++) {
-            filteredItems.push(foodItem);
-          }
+        for (let i = 0; i < item.quantity; i++) {
+          filteredItems.push(item);
         }
       });
-
-      console.log(filteredItems)
       onAddMultipleToCart(filteredItems)
-
+      console.log(filteredItems)
     }
   }, [id, sale]);
 
@@ -140,28 +135,45 @@ export default function PosListView({ id, sale }) {
 
   const handleOrderSubmit = async () => {
     try {
-      const Orders = items.map((item) => ({
+      const NewOrders = items.map((item) => ({
         item_id: item._id,
         quantity: item.quantity
       }));
 
+      const UpdateOrders = items.map((item) => {
+        const existsInSale = sale.orderList.some(saleItem => saleItem._id === item._id);
+
+        return {
+          item_id: existsInSale ? item.item_id : item._id,
+          quantity: item.quantity,
+          ...(existsInSale && { _id: item._id }),
+        };
+      });
+
+
+
+
       let response;
 
       if (id && sale) {
-        response = await axiosInstance.post('/api/order/add-item', {
-          order_id: id,
-          orders: Orders
+        response = await axiosInstance.patch(endpoints.sales.addItem(id), {
+          type: orderType,
+          table_id: pickedTable?._id,
+          customer_id: customerId,
+          Orders: UpdateOrders
         });
       } else {
         response = await axiosInstance.post('/api/order/create', {
           type: orderType,
           table_id: pickedTable._id,
           customer_id: customerId,
-          Orders
+          Orders: NewOrders
         });
       }
 
-      if (response.status === 201) {
+      const statuscode = id ? 200 : 201;
+
+      if (response.status === statuscode) {
         if (isKot) {
           const orderId = response?.data?.data?.OrderData?._id
           navigate(`/${orderId}/order-bill`)
@@ -174,9 +186,9 @@ export default function PosListView({ id, sale }) {
         onReset()
       }
     } catch (error) {
+      console.log(error)
       enqueueSnackbar('Please Try Again Order Not Created!!', { variant: 'error' })
     }
-    console.log(pickedTable, orderType, customerId, items)
   }
 
 
@@ -186,10 +198,7 @@ export default function PosListView({ id, sale }) {
       <Stack
         spacing={2}
         alignItems={{ xs: 'flex-end', md: 'center' }}
-        direction={{
-          xs: 'column',
-          md: 'row',
-        }}
+        direction={{ xs: 'column', lg: 'row' }} // Adjusted this line
         sx={{
           p: 2.5,
           pr: { xs: 2.5, md: 1 },
@@ -230,37 +239,38 @@ export default function PosListView({ id, sale }) {
               return filtered;
             }}
           />
+
+        </Stack>
+
+        <Stack direction='row' sx={{ width: 1 }} alignItems="center" spacing={2}>
           <Button
             onClick={
               () => {
                 setOpen(true);
               }
             }
-            sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 0.2 }}
+            sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 1 }}
             variant="contained"
           >
             Edit Table
           </Button>
+          <Button
+            onClick={upload.onTrue}
+            sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: { xs: 1, lg: '480px' } }}
+            variant="contained"
+            startIcon={<Iconify icon="mingcute:add-line" />}
+          >
+            New Customer
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 1 }}
+            onClick={handleOrderSubmit}
+          >
+            Submit
+          </Button>
         </Stack>
-
-
-        <Button
-          onClick={upload.onTrue}
-          sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 0.2 }}
-          variant="contained"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          New Customer
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 0.2 }}
-          onClick={handleOrderSubmit}
-        >
-          Submit
-        </Button>
-      </Stack >
-
+      </Stack>
       {/* PosCate categoryDetail component */}
       <PosCategoryDetail list={categories} handleCategorySelect={handleCategorySelect} />
 

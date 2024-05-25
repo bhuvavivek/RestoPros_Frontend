@@ -76,7 +76,7 @@ function FoodItemCardList({ item, onIncreaseQuantity, onDecreaseQuantity, onDele
       <Avatar alt='demo' src={item?.pictures?.length > 0 ? item?.pictures[0] : 'https://images.unsplash.com/photo-1518635017498-87f514b751ba?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} sx={{ width: 48, height: 48, mr: 2 }} />
 
       <ListItemText
-        primary={item.name}
+        primary={item?.name || item?.menuItems?.itemName}
         secondary={
           <>
             {fCurrency(item?.price)}

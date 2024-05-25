@@ -1,16 +1,26 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 
-import { Checkbox, FormControl, InputLabel, OutlinedInput, Select } from '@mui/material';
-import InputAdornment from '@mui/material/InputAdornment';
-import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Grid, Select, Checkbox, InputLabel, FormControl, Autocomplete, OutlinedInput } from '@mui/material';
 
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import Iconify from 'src/components/iconify';
+import CustomPopover, { usePopover } from 'src/components/custom-popover';
+
 
 // ----------------------------------------------------------------------
+
+
+const DurationOptions = [
+  { label: 'Daily', value: 'daily' },
+  { label: 'Weekly', value: 'weekly' },
+  { label: 'Monthly', value: 'monthly' },
+  { label: 'Yearly', value: 'yearly' },
+  { label: 'Custom', value: 'custom' }
+]
 
 export default function SoldReportTableToolbar({
   filters,
@@ -57,6 +67,16 @@ export default function SoldReportTableToolbar({
       >
 
 
+        <Grid item xs={12}>
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={DurationOptions}
+            sx={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Duration" />}
+          />
+
+        </Grid>
         <FormControl
           sx={{
             flexShrink: 0,
