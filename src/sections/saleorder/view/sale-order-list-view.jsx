@@ -1,16 +1,14 @@
 
+import { useEffect, useState } from 'react';
+
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 
-import { useGetSales } from 'src/api/sales';
 import { paths } from 'src/routes/paths';
 
-
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
-import { LoadingScreen } from 'src/components/loading-screen';
 import { useSettingsContext } from 'src/components/settings';
 
-import { useEffect } from 'react';
 import socketService from '../../../sockets/socket';
 import SaleOrderList from '../sale-order-list';
 
@@ -18,52 +16,43 @@ export default function SaleOrderListView() {
   const settings = useSettingsContext()
 
 
-  // const [sales, setSales] = useState([]);
-  // const [salesLoading, setSalesLoading] = useState(true);
+  const [sales, setSales] = useState([]);
+  const [salesLoading, setSalesLoading] = useState(true);
 
-  const { sales, salesLoading } = useGetSales({
-    expand: true,
-    orderList: true,
-    status: 'pending'
-  })
+  // const { sales, salesLoading } = useGetSales({
+  //   expand: true,
+  //   orderList: true,
+  //   status: 'pending'
+  // })
 
-  // useEffect(() => {
-
-  //   // Emit an event to request the orders
-  //   socketService.emit('get-order');
-
-  //   socketService.on('Orders', (Orders) => {
-  //     console.log(Orders)
-  //     setSales(Orders)
-  //     setSalesLoading(false);
-  //   })
-
-  //   // return () => {
-  //   //   socketService.off('orders');
-  //   //   socketService.disconnect();
-  //   // }
-  // }, [])
 
   useEffect(() => {
-    const connected = socketService.isConnected
+    const connected = socketService.isConnected;
     if (connected) {
-      console.log("socket is still connected");
-      socketService.emit('get-order', null, (error) => {
-        if (error) {
-          console.error("Error while emitting 'get-order' event: ", error);
-        } else {
-          console.log("'get-order' event has been emitted");
-        }
+
+
+      // Emit 'get-order' event
+      socketService.emit('get-order', { status: "pending" });
+
+      socketService.on('orders', (data) => {
+        console.log('Received orders: ', data);
+        setSales(data);
+        setSalesLoading(false);
       });
+
+      // Listen for 'error' event
+      socketService.on('error', (error) => {
+        console.error('Error: ', error.message);
+      });
+
     }
-
-  }, [])
-
+  }, []);
 
 
-  if (salesLoading) {
-    return <LoadingScreen />
-  }
+
+  // if (salesLoading) {
+  //   return <LoadingScreen />
+  // }
 
 
   return (

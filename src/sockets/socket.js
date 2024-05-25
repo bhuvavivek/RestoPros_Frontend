@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = 'https://restorent-managment-backend.onrender.com';
+const SOCKET_URL = 'http://localhost:8083';
 
 class SocketService {
   constructor() {
@@ -16,7 +16,7 @@ class SocketService {
 
       // Listen for the 'connect' event
       this.socket.on('connect', () => {
-        console.log('Socket successfully connected');
+        console.log('Connected to the server');
       });
 
       // handle connection error
@@ -44,7 +44,6 @@ class SocketService {
     }
   }
 
-
   emit(event, data, callback) {
     if (this.socket) {
       this.socket.emit(event, data, callback);
@@ -58,7 +57,6 @@ class SocketService {
   getSocket() {
     return this.socket;
   }
-
 }
 
 const socketService = new SocketService();
