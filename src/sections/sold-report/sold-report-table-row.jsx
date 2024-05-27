@@ -25,9 +25,6 @@ export default function SoldReportTableRow({
     count,
   } = row;
 
-  const confirm = useBoolean();
-
-  const popover = usePopover();
 
 
 
@@ -53,7 +50,7 @@ export default function SoldReportTableRow({
           </IconButton>
         </TableCell> */}
       </TableRow>
-      {/* 
+      {/*
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}

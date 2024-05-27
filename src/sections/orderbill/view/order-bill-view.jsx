@@ -37,7 +37,7 @@ export default function OrderBillView({ id }) {
       const img = new Image();
       img.onload = () => resolve();
       img.onerror = (error) => reject(error);
-      img.src = "https://images.unsplash.com/photo-1702306456117-818c13b4e97a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+      img.src = "/assets/images/logo/KarmaEspresso.png";
     });
 
     // After the image is loaded, write the content to the iframe and print
@@ -109,7 +109,7 @@ export default function OrderBillView({ id }) {
                     fontSize: '17px',
                     textAlign: 'left',
                     fontWeight: 'bold',
-                  }}>Resturant POS Pro</strong>
+                  }}>KARMAW ESPRESSO</strong>
                   <small
                     style={
                       {

@@ -9,7 +9,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 // ----------------------------------------------------------------------
 
 // OVERVIEW
-const IndexPage = lazy(() => import('src/pages/dashboard/app'));
+// const IndexPage = lazy(() => import('src/pages/dashboard/app'));
 const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
 const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics'));
 const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
@@ -64,6 +64,7 @@ const BlankPage = lazy(() => import('src/pages/dashboard/blank'));
 
 // this is my pages
 const DashboardPage = lazy(() => import('src/pages/dashboard/dashboard'))
+const IndexPage = lazy(() => import('src/pages/dashboard/dashboard'))
 
 // sales pages
 const SaleDetailPage = lazy(() => import('src/pages/dashboard/sale/details'))
@@ -94,9 +95,10 @@ const UserPermissionPage = lazy(() => import('src/pages/dashboard/userpermission
 // SaleOrder
 const SaleOrderPage = lazy(() => import('src/pages/dashboard/saleorder'))
 
-// Sold Report
+//  Report
 
-const SoldReport = lazy(() => import('src/pages/dashboard/sold-report'))
+const SoldReport = lazy(() => import('src/pages/dashboard/report/sold-report'))
+const OverallReport = lazy(() => import('src/pages/dashboard/report/overall-report'))
 
 
 // PermissionRoute ;
@@ -200,9 +202,14 @@ export const dashboardRoutes = [
         ],
       },
       {
-        path: 'sold-report',
-        element: <SoldReport />
+        path: 'report',
+        children: [
+          { element: <OverallReport />, index: true },
+          { path: 'overall-report', element: <OverallReport /> },
+          { path: 'sold-report', element: <SoldReport /> },
+        ]
       },
+
       {
         path: 'order',
         children: [

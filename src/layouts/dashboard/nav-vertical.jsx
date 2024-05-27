@@ -1,28 +1,28 @@
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useContext, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
+import Stack from '@mui/material/Stack';
 
 import { usePathname } from 'src/routes/hooks';
 
 import { useResponsive } from 'src/hooks/use-responsive';
-import { useMockedUser } from 'src/hooks/use-mocked-user';
+
+import { AuthContext } from 'src/auth/context/jwt';
 
 import Logo from 'src/components/logo';
-import Scrollbar from 'src/components/scrollbar';
 import { NavSectionVertical } from 'src/components/nav-section';
+import Scrollbar from 'src/components/scrollbar';
 
-import { NAV } from '../config-layout';
-import NavUpgrade from '../common/nav-upgrade';
-import { useNavData } from './config-navigation';
 import NavToggleButton from '../common/nav-toggle-button';
+import { NAV } from '../config-layout';
+import { useNavData } from './config-navigation';
 
 // ----------------------------------------------------------------------
 
 export default function NavVertical({ openNav, onCloseNav }) {
-  const { user } = useMockedUser();
+  const { user } = useContext(AuthContext);
 
   const pathname = usePathname();
 
@@ -53,13 +53,13 @@ export default function NavVertical({ openNav, onCloseNav }) {
       <NavSectionVertical
         data={navData}
         slotProps={{
-          currentRole: user?.role,
+          currentRole: user?.type,
         }}
       />
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <NavUpgrade />
+      {/* <NavUpgrade /> */}
     </Scrollbar>
   );
 

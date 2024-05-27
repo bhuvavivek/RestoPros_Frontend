@@ -1,6 +1,7 @@
 import isEqual from 'lodash/isEqual';
 import { useCallback, useEffect, useState } from 'react';
 
+import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -16,8 +17,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 
 import axiosInstance, { endpoints } from 'src/utils/axios';
 
-import { useGetCategories } from 'src/api/category';
-import { useGetMostSoldReport } from 'src/api/report';
+import { useGetOverall } from 'src/api/report';
 
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { convertToUTCDate } from 'src/components/custom-date-range-picker';
@@ -37,33 +37,49 @@ import {
   useTable,
 } from 'src/components/table';
 
-import SoldReportTableFiltersResult from '../sold-report-filters-result';
-import SoldReportTableRow from '../sold-report-table-row';
-import SoldReportTableToolbar from '../sold-report-table-toolbar';
+import DashboardWidgetSummery from 'src/sections/dashboard/dashboard-widget-summery';
+
+import OverallReportTableFiltersResult from '../overall-report-filters-result';
+import OverallReportTableRow from '../overall-report-table-row';
+import OverallReportTableToolbar from '../overall-report-table-toolbar';
 
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'MenuItem' },
-  { id: 'description', label: 'Description' },
-  { id: 'count', label: 'Count' },
+  { id: 'orderno', label: 'OrdeNo' },
+  { id: 'subtotal', label: 'SubTotal' },
+  { id: 'discount', label: 'Discount (%)' },
+  { id: 'discountedAmount', label: 'Discount Amount' },
+  { id: 'tax', label: 'Tax (%)' },
+  { id: 'taxAmount', label: 'Tax Amount' },
+  { id: 'tip', label: 'Tip' },
+  { id: 'date', label: 'Date' },
+  { id: 'status', label: 'Status' },
   { id: '', width: 88 },
 ];
 
+const PaymentOption = [
+  { label: 'Online', value: 'online' },
+  { label: 'Cash', value: 'cash' },
+]
+
+const OrderTypeOption = [
+  { label: 'Dinning', value: 'dinning' },
+  { label: 'Pickup', value: 'pickup' },
+  { label: 'Without Table', value: 'BookWithoutTable' },
+]
 
 const defaultFilters = {
-  name: '',
-  description: '',
-  categoryName: '',
-  category: [],
+  orderNo: '',
   startDate: null,
   endDate: null,
 };
 
+
 // ----------------------------------------------------------------------
 
-export default function SoldReportListView() {
+export default function OverallReportListView() {
 
 
   const table = useTable();
@@ -76,30 +92,20 @@ export default function SoldReportListView() {
 
   const [duration, setDuration] = useState();
   const [search, setSearch] = useState();
-  const [categoryId, setCategoryId] = useState();
+  const [paymentMode, setPaymentMode] = useState();
+  const [orderType, setOrderType] = useState();
 
-  const { soldReport, soldLoading, soldEmpty } = useGetMostSoldReport({
+  const { overAllReport, overAllReportEmpty, overAllReportLoading, totalAmount, totalDiscount, totalTax } = useGetOverall({
     ...(duration && { duration: duration.value }),
     ...(search && { name: search }),
-    ...(categoryId && { category: categoryId.value }),
     ...((duration && duration.value === 'manual') ? (filters.startDate && { startDate: convertToUTCDate(filters.startDate) }) : {}),
-    ...((duration && duration.value === 'manual') ? (filters.endDate && { endDate: convertToUTCDate(filters.endDate) }) : {})
-  });
-  const { categories } = useGetCategories();
+    ...((duration && duration.value === 'manual') ? (filters.endDate && { endDate: convertToUTCDate(filters.endDate) }) : {}),
+    ...((paymentMode && { PaymentMethod: paymentMode.value })),
+    ...((orderType && { type: orderType.value }))
 
+  });
 
   const confirm = useBoolean();
-  const upload = useBoolean();
-
-
-  // category Filter options
-  const CATEGORY_OPTIONS = categories?.map((category) => ({
-    value: category._id,
-    label: category.name,
-  }))
-
-
-
 
   // // code for pagination
   // const handlePageChange = useCallback((event, newPage) => {
@@ -115,10 +121,10 @@ export default function SoldReportListView() {
 
   //  here i m fetching category data and set data
   useEffect(() => {
-    if (soldReport.length) {
-      setTableData(soldReport);
+    if (overAllReport.length) {
+      setTableData(overAllReport);
     }
-  }, [soldReport]);
+  }, [overAllReport]);
 
 
   const dateError =
@@ -141,7 +147,7 @@ export default function SoldReportListView() {
 
   const canReset = !isEqual(defaultFilters, filters);
 
-  const notFound = (!dataFiltered.length && canReset) || soldEmpty;
+  const notFound = (!dataFiltered.length && canReset) || overAllReportEmpty;
 
   const handleFilters = useCallback(
     (name, value) => {
@@ -191,8 +197,9 @@ export default function SoldReportListView() {
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
     setSearch()
-    setCategoryId()
     setDuration()
+    setPaymentMode()
+    setOrderType()
   }, []);
 
   return (
@@ -205,30 +212,35 @@ export default function SoldReportListView() {
           links={[
             { name: 'Dashboard', href: paths.dashboard.mainDashboard },
             {
-              name: 'sold-report',
-              href: paths.dashboard.report.soldReport,
+              name: 'overall-report',
+              href: paths.dashboard.report.overallReport,
             },
             { name: 'List' },
           ]}
           sx={{ mb: { xs: 3, md: 5 } }}
         />
 
+
+
         <Card>
 
-          <SoldReportTableToolbar
+          <OverallReportTableToolbar
             filters={filters}
             setSearch={setSearch}
             onFilters={handleFilters}
-            categoryOptions={CATEGORY_OPTIONS}
             setDuration={setDuration}
-            setCategoryId={setCategoryId}
-            categoryId={categoryId}
             duration={duration}
+            PaymentOption={PaymentOption}
+            setPaymentMode={setPaymentMode}
+            paymentMode={paymentMode}
+            OrderTypeOption={OrderTypeOption}
+            orderType={orderType}
+            setOrderType={setOrderType}
             dateError={dateError}
           />
 
           {canReset && (
-            <SoldReportTableFiltersResult
+            <OverallReportTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
               //
@@ -277,7 +289,7 @@ export default function SoldReportListView() {
                 />
 
                 <TableBody>
-                  {soldLoading ? (
+                  {overAllReportLoading ? (
                     [...Array(table.rowsPerPage)].map((i, index) => (
                       <TableSkeleton key={index} sx={{ height: denseHeight }} />
                     ))
@@ -289,7 +301,7 @@ export default function SoldReportListView() {
                           table.page * table.rowsPerPage + table.rowsPerPage
                         )
                         .map((row) => (
-                          <SoldReportTableRow
+                          <OverallReportTableRow
                             key={row._id}
                             row={row}
                             selected={table.selected.includes(row._id)}
@@ -323,6 +335,31 @@ export default function SoldReportListView() {
             onChangeDense={table.onChangeDense}
           />
         </Card>
+
+        <Grid container columnSpacing={3} rowGap={3} marginTop={3}>
+          <Grid item xs={12} md={4} >
+            <DashboardWidgetSummery
+              title="Total Amount "
+              total={totalAmount}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4} >
+            <DashboardWidgetSummery
+              title="Total Tax "
+              total={totalTax}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4} >
+            <DashboardWidgetSummery
+              title="Total Discount "
+              total={totalDiscount}
+            />
+          </Grid>
+
+        </Grid>
+
       </Container>
 
       <ConfirmDialog
@@ -356,7 +393,7 @@ export default function SoldReportListView() {
 function applyFilter({ inputData, comparator, filters }) {
 
 
-  const { name, description, categoryName, category } = filters;
+  const { orderNo } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -368,20 +405,11 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (name) {
-    inputData = inputData.filter((menu) => {
-      const nameMatch = name ? menu?.name.toLowerCase().includes(name?.toLowerCase()) : true;
-      const descriptionMatch = description ? menu?.description.toLowerCase().includes(description?.toLowerCase()) : true;
-      const categoryMatch = categoryName ? menu.categories?.some((item) => item.name.toLowerCase().includes(categoryName.toLowerCase())) : true;
-
-      return nameMatch || descriptionMatch || categoryMatch;
+  if (orderNo) {
+    inputData = inputData.filter((report) => {
+      const orderNoMatch = orderNo ? report?.order_no.toString().toLowerCase().includes(orderNo?.toLowerCase()) : true;
+      return orderNoMatch;
     });
-  }
-
-  if (category?.length > 0 && category) {
-    inputData = inputData.filter((item) =>
-      item.categories?.some(categoryItem => category.includes(categoryItem.name))
-    );
   }
 
   return inputData;

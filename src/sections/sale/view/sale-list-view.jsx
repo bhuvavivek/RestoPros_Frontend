@@ -203,20 +203,12 @@ export default function SaleListView() {
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             {
-              name: 'Service',
-              href: paths.dashboard.product.root,
+              name: 'Sale',
+              href: paths.dashboard.sale.root,
             },
             { name: 'List' },
           ]}
-          action={
-            <Button
-              onClick={upload.onTrue}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              New Customer
-            </Button>
-          }
+
           sx={{ mb: { xs: 3, md: 5 } }}
         />
 

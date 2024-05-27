@@ -24,25 +24,26 @@ const DurationOptions = [
   { label: 'Custom', value: 'manual' }
 ]
 
-export default function SoldReportTableToolbar({
+export default function OverallReportTableToolbar({
   filters,
   onFilters,
-  setCategoryId,
   setDuration,
   setSearch,
   //
-  categoryOptions,
-  categoryId,
   duration,
+  PaymentOption,
+  setPaymentMode,
+  paymentMode,
+  OrderTypeOption,
+  orderType,
+  setOrderType,
   dateError
 }) {
   const popover = usePopover();
 
   const handleFilterName = useCallback(
     (event) => {
-      onFilters('name', event.target.value);
-      onFilters('description', event.target.value);
-      onFilters('categoryName', event.target.value);
+      onFilters('orderNo', event.target.value);
       setSearch(event.target.value);
     },
     [onFilters, setSearch]
@@ -77,16 +78,27 @@ export default function SoldReportTableToolbar({
         }}
       >
 
+        <Grid item xs={12}>
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={OrderTypeOption}
+            sx={{ width: 180 }}
+            value={orderType}
+            onChange={(event, value) => setOrderType(value)}
+            renderInput={(params) => <TextField {...params} label="Order Type" />}
+          />
+        </Grid>
 
         <Grid item xs={12}>
           <Autocomplete
             disablePortal
             id="combo-box-demo"
-            value={categoryId}
-            options={categoryOptions}
-            sx={{ width: 300 }}
-            onChange={(event, value) => setCategoryId(value)}
-            renderInput={(params) => <TextField {...params} label="Category" />}
+            options={PaymentOption}
+            sx={{ width: 180 }}
+            value={paymentMode}
+            onChange={(event, value) => setPaymentMode(value)}
+            renderInput={(params) => <TextField {...params} label="Payment Method" />}
           />
         </Grid>
 
@@ -95,7 +107,7 @@ export default function SoldReportTableToolbar({
             disablePortal
             id="combo-box-demo"
             options={DurationOptions}
-            sx={{ width: 300 }}
+            sx={{ width: 180 }}
             value={duration}
             onChange={(event, value) => setDuration(value)}
             renderInput={(params) => <TextField {...params} label="Duration" />}
@@ -108,7 +120,7 @@ export default function SoldReportTableToolbar({
           onChange={handleFilterStartDate}
           slotProps={{ textField: { fullWidth: true } }}
           sx={{
-            maxWidth: { md: 180 },
+            maxWidth: { md: 150 },
           }}
         />)
         }
@@ -123,15 +135,15 @@ export default function SoldReportTableToolbar({
             },
           }}
           sx={{
-            maxWidth: { md: 180 },
+            maxWidth: { md: 150 },
           }}
         />)
         }
 
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
+        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1.5 }}>
           <TextField
             fullWidth
-            value={filters.name}
+            value={filters.orderNo}
             onChange={handleFilterName}
             placeholder="Search..."
             InputProps={{
@@ -184,14 +196,17 @@ export default function SoldReportTableToolbar({
   );
 }
 
-SoldReportTableToolbar.propTypes = {
+OverallReportTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
-  categoryOptions: PropTypes.array,
   setSearch: PropTypes.func,
-  setCategoryId: PropTypes.func,
   setDuration: PropTypes.func,
-  categoryId: PropTypes.func,
-  duration: PropTypes.func,
+  duration: PropTypes.object,
   dateError: PropTypes.bool,
+  PaymentOption: PropTypes.array,
+  setPaymentMode: PropTypes.func,
+  paymentMode: PropTypes.object,
+  OrderTypeOption: PropTypes.array,
+  setOrderType: PropTypes.func,
+  orderType: PropTypes.object
 };

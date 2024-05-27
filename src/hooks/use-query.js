@@ -15,4 +15,3 @@ export function useGetQueryParamsData(value) {
 
   return queryParam;
 }
-

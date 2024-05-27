@@ -1,58 +1,59 @@
 
-import { useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 
 import { paths } from 'src/routes/paths';
 
+import { useGetSales } from 'src/api/sales';
+
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { LoadingScreen } from 'src/components/loading-screen';
 import { useSettingsContext } from 'src/components/settings';
 
-import socketService from '../../../sockets/socket';
 import SaleOrderList from '../sale-order-list';
 
 export default function SaleOrderListView() {
   const settings = useSettingsContext()
 
 
-  const [sales, setSales] = useState([]);
-  const [salesLoading, setSalesLoading] = useState(true);
+  // const [sales, setSales] = useState([]);
+  // const [salesLoading, setSalesLoading] = useState(true);
 
-  // const { sales, salesLoading } = useGetSales({
-  //   expand: true,
-  //   orderList: true,
-  //   status: 'pending'
-  // })
-
-
-  useEffect(() => {
-    const connected = socketService.isConnected;
-    if (connected) {
+  const { sales, salesLoading } = useGetSales({
+    expand: true,
+    orderList: true,
+    status: 'pending'
+  })
 
 
-      // Emit 'get-order' event
-      socketService.emit('get-order', { status: "pending" });
-
-      socketService.on('orders', (data) => {
-        console.log('Received orders: ', data);
-        setSales(data);
-        setSalesLoading(false);
-      });
-
-      // Listen for 'error' event
-      socketService.on('error', (error) => {
-        console.error('Error: ', error.message);
-      });
-
-    }
-  }, []);
+  // useEffect(() => {
+  //   const connected = socketService.isConnected;
+  //   if (connected) {
 
 
+  //     // Emit 'get-order' event
+  //     socketService.emit('get-order', { status: "pending" });
 
-  // if (salesLoading) {
-  //   return <LoadingScreen />
-  // }
+  //     socketService.on('orders', (data) => {
+  //       console.log('Received orders: ', data);
+  //       setSales(data);
+  //       setSalesLoading(false);
+  //     });
+
+  //     // Listen for 'error' event
+  //     socketService.on('error', (error) => {
+  //       console.error('Error: ', error.message);
+  //     });
+
+  //   }
+  // }, []);
+
+
+
+  if (salesLoading) {
+    return <LoadingScreen />
+  }
 
 
   return (

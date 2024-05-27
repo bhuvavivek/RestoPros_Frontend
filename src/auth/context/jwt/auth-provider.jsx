@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { useMemo, useEffect, useReducer, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useReducer } from 'react';
 
 import axios, { endpoints } from 'src/utils/axios';
 
 import { AuthContext } from './auth-context';
-import { setSession, isValidToken } from './utils';
+import { isValidToken, setSession } from './utils';
 
 // ----------------------------------------------------------------------
 
@@ -66,7 +66,13 @@ export function AuthProvider({ children }) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
 
-        const response = await axios.get(endpoints.profile.userprofile);
+        const response = await axios.get(endpoints.profile.userprofile,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          }
+        );
 
         const { user } = response.data;
         dispatch({
@@ -120,10 +126,20 @@ export function AuthProvider({ children }) {
 
     setSession(token);
     sessionStorage.setItem(STORAGE_KEY, token);
+
+    const profileResponse = await axios.get(endpoints.profile.userprofile, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const { user } = profileResponse.data;
+
     dispatch({
       type: 'LOGIN',
       payload: {
         user: {
+          ...user,
           token
         },
       },

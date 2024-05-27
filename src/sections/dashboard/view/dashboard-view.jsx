@@ -1,38 +1,27 @@
+import { Grid, } from "@mui/material";
 import { Container } from "@mui/system";
-import { DateRangePicker } from "@mui/lab";
-import { Grid, TextField, Autocomplete, } from "@mui/material";
 
-import { useGetSales } from "src/api/sales";
-import { useGetOverall } from "src/api/report";
 import { useGetDashboardCount, useGetSaleOrderCount } from "src/api/dashboard";
+import { useGetSales } from "src/api/sales";
 
 import { useSettingsContext } from "src/components/settings";
 
-import DashboardWidgetSummery from "../dashboard-widget-summery";
 import DashboardRecentActivity from "../dashboard-recent-activity";
+import DashboardWidgetSummery from "../dashboard-widget-summery";
 
-
-const DurationOptions = [
-  { label: 'Daily', value: 'daily' },
-  { label: 'Weekly', value: 'weekly' },
-  { label: 'Monthly', value: 'monthly' },
-  { label: 'Yearly', value: 'yearly' },
-  { label: 'Custom', value: 'custom' }
-]
 
 export default function DashboardView() {
 
   const settings = useSettingsContext();
   const { dashboardCount } = useGetDashboardCount();
   const { saleOrderCount } = useGetSaleOrderCount();
-  const { overAll } = useGetOverall()
 
   const { sales } = useGetSales({ page: 1, per_page: 5, expand: true, orderList: true })
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'} >
       <Grid container columnSpacing={3} rowGap={3}>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Autocomplete
             disablePortal
             id="combo-box-demo"
@@ -41,7 +30,7 @@ export default function DashboardView() {
             renderInput={(params) => <TextField {...params} label="Duration" />}
           />
           <DateRangePicker localeText={{ start: 'Start-Date', end: 'End-date' }} />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={4} >
           <DashboardWidgetSummery
             title="Total Active Users"
@@ -77,26 +66,6 @@ export default function DashboardView() {
           />
         </Grid>
 
-        <Grid item xs={12} md={4} >
-          <DashboardWidgetSummery
-            title="Total Amount "
-            total={overAll?.totalAmount}
-          />
-        </Grid>
-
-        <Grid item xs={12} md={4} >
-          <DashboardWidgetSummery
-            title="Total Discount "
-            total={overAll?.totalDiscount}
-          />
-        </Grid>
-
-        <Grid item xs={12} md={4} >
-          <DashboardWidgetSummery
-            title="Total Tax "
-            total={overAll?.totalTax}
-          />
-        </Grid>
 
         <Grid item xs={12} md={12} lg={12}>
           <DashboardRecentActivity

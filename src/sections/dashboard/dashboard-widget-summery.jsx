@@ -45,7 +45,7 @@ export default function DashboardWidgetSummery({ title, percent, total, lasttota
 
         <Typography variant="h3">{fNumber(total)}</Typography>
 
-        <Typography variant="h4">{fNumber(lasttotal)} {" "} {lasttime} </Typography>
+        {/* <Typography variant="h4">{fNumber(lasttotal)} {" "} {lasttime} </Typography> */}
 
       </Box>
 

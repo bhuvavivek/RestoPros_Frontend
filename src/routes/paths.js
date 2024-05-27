@@ -91,7 +91,7 @@ export const paths = {
   },
   // DASHBOARD
   dashboard: {
-    root: ROOTS.DASHBOARD,
+    root: `${ROOTS.DASHBOARD}/mainDashboard`,
     mainDashboard: `${ROOTS.DASHBOARD}/mainDashboard`,
     sale: {
       root: `${ROOTS.DASHBOARD}/sale`,
@@ -127,9 +127,10 @@ export const paths = {
       booking: `${ROOTS.DASHBOARD}/booking`,
       file: `${ROOTS.DASHBOARD}/file`,
     },
-    report:
-      `${ROOTS.DASHBOARD}/sold-report`
-    ,
+    report: {
+      soldReport: `${ROOTS.DASHBOARD}/report/sold-report`,
+      overallReport: `${ROOTS.DASHBOARD}/report/overall-report`,
+    },
     user: {
       root: `${ROOTS.DASHBOARD}/user`,
       new: `${ROOTS.DASHBOARD}/user/new`,

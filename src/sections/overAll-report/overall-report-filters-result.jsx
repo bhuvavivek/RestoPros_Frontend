@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
 
-import Box from '@mui/material/Box';
 import { Chip } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 
-import Iconify from 'src/components/iconify';
 import { shortDateLabel } from 'src/components/custom-date-range-picker';
+import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function SoldReportTableFiltersResult({
+export default function OverallReportTableFiltersResult({
   filters,
   onFilters,
   //
@@ -22,11 +22,6 @@ export default function SoldReportTableFiltersResult({
 }) {
 
   const shortLabel = shortDateLabel(filters.startDate, filters.endDate);
-
-  const handleRemovePublish = (inputValue) => {
-    const newValue = filters.category.filter((item) => item !== inputValue);
-    onFilters('category', newValue);
-  };
 
 
 
@@ -47,19 +42,6 @@ export default function SoldReportTableFiltersResult({
       <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap" alignItems="center">
 
 
-        {!!filters.category.length && (
-          <Block label="Category:">
-            {filters.category.map((item) => (
-              <Chip
-                key={item}
-                label={item}
-                size="small"
-                onDelete={() => handleRemovePublish(item)}
-              />
-            ))}
-          </Block>
-        )}
-
         {filters.startDate && filters.endDate && (
           <Block label="Date:">
             <Chip size="small" label={shortLabel} onDelete={handleRemoveDate} />
@@ -78,7 +60,7 @@ export default function SoldReportTableFiltersResult({
   );
 }
 
-SoldReportTableFiltersResult.propTypes = {
+OverallReportTableFiltersResult.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   onResetFilters: PropTypes.func,

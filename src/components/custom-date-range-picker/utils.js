@@ -30,3 +30,11 @@ export function shortDateLabel(startDate, endDate) {
 
   return `${fDate(startDate, 'dd MMM yy')} - ${fDate(endDate, 'dd MMM yy')}`;
 }
+
+export function convertToUTCDate(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0'); // getMonth() is zero-based
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}

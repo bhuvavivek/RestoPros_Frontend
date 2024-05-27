@@ -6,7 +6,7 @@ export default function SoldReportPage() {
   return (
     <>
       <Helmet>
-        <title>Sold Orders</title>
+        <title>Sold Report</title>
       </Helmet>
       <SoldReportListView />
     </>

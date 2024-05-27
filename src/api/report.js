@@ -6,11 +6,11 @@ import { endpoints, fetcher } from 'src/utils/axios';
 export function useGetMostSoldReport(quaryParams) {
   const URL = quaryParams
     ? [
-      endpoints.report.mostSold,
-      {
-        params: quaryParams,
-      },
-    ]
+        endpoints.report.mostSold,
+        {
+          params: quaryParams,
+        },
+      ]
     : endpoints.report.mostSold;
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
@@ -31,26 +31,28 @@ export function useGetMostSoldReport(quaryParams) {
 export function useGetOverall(quaryParams) {
   const URL = quaryParams
     ? [
-      endpoints.report.overAll,
-      {
-        params: quaryParams,
-      },
-    ]
+        endpoints.report.overAll,
+        {
+          params: quaryParams,
+        },
+      ]
     : endpoints.report.overAll;
 
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
-      overAll: data?.data[0] || [],
-      overAllLoading: isLoading,
-      overAllError: error,
-      overAllValidating: isValidating,
-      overAllEmpty: !isLoading && !data?.data?.length,
+      overAllReport: data?.data[0]?.List || [],
+      overAllReportLoading: isLoading,
+      overAllReportError: error,
+      overAllReportValidating: isValidating,
+      overAllReportEmpty: !isLoading && !data?.data[0]?.List?.length,
+      totalAmount: data?.data[0]?.totalAmount,
+      totalDiscount: data?.data[0]?.totalDiscount,
+      totalTax: data?.data[0]?.totalTax,
     }),
     [data?.data, error, isLoading, isValidating]
   );
 
   return memoizedValue;
 }
-
