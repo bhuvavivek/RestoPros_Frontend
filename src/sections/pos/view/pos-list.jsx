@@ -85,7 +85,7 @@ export default function PosListView({ id, sale }) {
       setCustomerId(sale?.customer?._id);
 
       const filteredItems = [];
-      sale.orderList?.forEach((item) => {
+      sale?.orderList?.forEach((item) => {
         for (let i = 0; i < item.quantity; i++) {
           filteredItems.push(item);
         }
@@ -135,27 +135,22 @@ export default function PosListView({ id, sale }) {
 
   const handleOrderSubmit = async () => {
     try {
-      const NewOrders = items.map((item) => ({
-        item_id: item._id,
-        quantity: item.quantity
-      }));
-
-      const UpdateOrders = items.map((item) => {
-        const existsInSale = sale.orderList.some(saleItem => saleItem._id === item._id);
-
-        return {
-          item_id: existsInSale ? item.item_id : item._id,
-          quantity: item.quantity,
-          ...(existsInSale && { _id: item._id }),
-        };
-      });
-
-
-
 
       let response;
 
       if (id && sale) {
+
+        // for update order
+        const UpdateOrders = items.map((item) => {
+          const existsInSale = sale?.orderList?.some(saleItem => saleItem._id === item._id);
+
+          return {
+            item_id: existsInSale ? item.item_id : item._id,
+            quantity: item.quantity,
+            ...(existsInSale && { _id: item._id }),
+          };
+        });
+
         response = await axiosInstance.patch(endpoints.sales.addItem(id), {
           type: orderType,
           table_id: pickedTable?._id,
@@ -163,6 +158,14 @@ export default function PosListView({ id, sale }) {
           Orders: UpdateOrders
         });
       } else {
+
+        // for new order
+        const NewOrders = items.map((item) => ({
+          item_id: item?._id,
+          quantity: item?.quantity
+        }));
+
+
         response = await axiosInstance.post('/api/order/create', {
           type: orderType,
           table_id: pickedTable._id,
