@@ -73,6 +73,7 @@ export function useNavData() {
               title: t('Dashboard'),
               path: paths.dashboard.mainDashboard,
               icon: ICONS.dashboard,
+              permission: ['USER'],
             },
 
             // Sale
@@ -80,7 +81,7 @@ export function useNavData() {
               title: t('Sale'),
               path: paths.dashboard.sale.root,
               icon: ICONS.sale,
-              permission: 'ORDER',
+              permission: ['USER'],
               children: [
                 { title: t('list'), path: paths.dashboard.sale.root },
               ],
@@ -91,7 +92,7 @@ export function useNavData() {
               title: t('category'),
               path: paths.dashboard.category,
               icon: ICONS.folder,
-              permission: 'MENU',
+              permission: ['MENU'],
             },
 
             // Food Items
@@ -99,14 +100,14 @@ export function useNavData() {
               title: t('menu'),
               path: paths.dashboard.foodItem,
               icon: ICONS.foodItem,
-              permission: 'MENU',
+              permission: ['MENU'],
             },
             // service
             {
               title: t('service'),
               path: paths.dashboard.service,
               icon: ICONS.service,
-              permission: "TABLE"
+              permission: ["TABLE", 'MENU']
             },
 
             // pos,
@@ -114,19 +115,20 @@ export function useNavData() {
               title: t('pos'),
               path: paths.dashboard.pos,
               icon: ICONS.ecommerce,
-              permission: "ORDER"
+              permission: ['MENU']
             },
             {
               title: t('order'),
               path: paths.dashboard.saleorder,
               icon: ICONS.order,
-              permission: "ORDER"
+              permission: ["ORDER", 'MENU']
             },
             // Report
             {
               title: t('report'),
               path: paths.dashboard.report.overallReport,
               icon: ICONS.report,
+              permission: ["OverSoldReport"],
               children: [
                 {
                   title: t('overAllReport'),
@@ -142,7 +144,8 @@ export function useNavData() {
             {
               title: t('customer'),
               path: paths.dashboard.customer,
-              icon: ICONS.customer
+              icon: ICONS.customer,
+              permission: ['MENU']
             },
             // User
             {
@@ -152,7 +155,7 @@ export function useNavData() {
               children: [
                 { title: t('list'), path: paths.dashboard.userpermission.root },
               ],
-              permission: "USER"
+              permission: ["USER"]
             },
             {
               title: t('User'),
@@ -162,7 +165,7 @@ export function useNavData() {
                 { title: t('list'), path: paths.dashboard.users.root },
                 { title: t('add'), path: paths.dashboard.users.new },
               ],
-              permission: "USER"
+              permission: ["USER"]
             },
 
             // this ALL ARE other routes
@@ -430,7 +433,7 @@ export function useNavData() {
       // Filter items based on user permissions
       if (user?.type !== 'admin') {
         items.forEach((item) => {
-          item.items = item.items.filter((subItem) => !subItem.permission || user.permissions?.includes(subItem.permission));
+          item.items = item.items.filter((subItem) => !subItem.permission || subItem.permission.some(p => user.permissions?.includes(p)));
         });
       }
 

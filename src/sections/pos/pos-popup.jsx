@@ -42,7 +42,7 @@ export default function PosTableDialog({ title = 'Choose Table ', open, onClose,
 
 
   return (
-    <Dialog fullWidth maxWidth="lg" open={open}  {...other} >
+    <Dialog fullWidth maxWidth="md" open={open}  {...other} >
 
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <DialogTitle sx={{ p: (theme) => theme.spacing(3, 3, 2, 3) }}>

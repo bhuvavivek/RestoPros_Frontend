@@ -2,8 +2,10 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 import { Card, CardContent, LinearProgress, Typography } from "@mui/material";
+import { Stack } from '@mui/system';
 
 import SaleOrderItem from "./sale-order-item";
+import SaleOrderTimer from './sale-order-timer';
 
 export default function SaleOrderList({ sale }) {
 
@@ -17,11 +19,15 @@ export default function SaleOrderList({ sale }) {
   return (
     <Card>
       <CardContent>
-        <Typography variant='h6'>{sale?.order_no}</Typography>
+        <Stack justifyContent='space-between' alignItems='center'>
+          <Typography variant='h6'>{sale?.order_no}</Typography>
+          <SaleOrderTimer startTime={sale?.createdAt} />
+        </Stack>
         <Typography variant='body1' style={{ marginTop: '4px' }}>{sale?.type}</Typography>
         <LinearProgress variant="determinate" value={progressPercentage} style={{ marginTop: '4px' }} />
 
-        <Typography key={sale?.table?.id} variant="body2" color="textSecondary" style={{ marginTop: '4px' }}>{sale?.table?.name}</Typography>
+        <Typography key={sale?.table?.id} variant="body1" color="textSecondary" style={{ marginTop: '4px' }}>{sale?.table?.table_no}</Typography>
+        <Typography key={sale?.table?.id} variant="body1" color="textSecondary" style={{ marginTop: '4px' }}>{sale?.table?.name}</Typography>
 
         <Typography variant="body2" color="textSecondary">{`${progressPercentage}%`}</Typography>
 

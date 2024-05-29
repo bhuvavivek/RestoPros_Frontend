@@ -1,6 +1,7 @@
+import { useTheme } from '@emotion/react';
 import PropTypes from 'prop-types';
 
-import { Avatar, Card, FormControlLabel, ListItem, ListItemText, Switch, Typography } from "@mui/material";
+import { Avatar, Card, FormControlLabel, ListItem, ListItemText, Switch, Typography, useMediaQuery } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 
 import { fCurrency } from 'src/utils/format-number';
@@ -71,11 +72,33 @@ PosCartView.propTypes = {
 
 function FoodItemCardList({ item, onIncreaseQuantity, onDecreaseQuantity, onDeleteCart }) {
 
+  const theme = useTheme();
+  const isScreenSizeBelowLG = useMediaQuery(theme.breakpoints.down('lg'));
+
   return (
-    <ListItem onClick={() => onDeleteCart(item._id)} sx={{ cursor: 'pointer' }}>
+    <ListItem onClick={() => onDeleteCart(item._id)} sx={{ cursor: 'pointer', flexDirection: { xs: 'column', lg: 'row' } }}>
       <Avatar alt='demo' src={item?.pictures?.length > 0 ? item?.pictures[0] : 'https://images.unsplash.com/photo-1518635017498-87f514b751ba?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} sx={{ width: 48, height: 48, mr: 2 }} />
 
       <ListItemText
+        sx={{
+          display: 'flex',
+          gap: {
+            xs: '8px',
+            lg: '0px'
+          },
+          marginTop: {
+            xs: '5px',
+            lg: '0px'
+          },
+          marginBottom: {
+            xs: '5px',
+            lg: '0px'
+          },
+          flexDirection: {
+            xs: 'row',
+            lg: 'column'
+          }
+        }}
         primary={item?.name || item?.menuItems?.itemName}
         secondary={
           <>
@@ -127,7 +150,7 @@ FoodItemCardList.propTypes = {
     name: PropTypes.string,
     pictures: PropTypes.string,
     _id: PropTypes.string,
-
+    menuItems: PropTypes.object
     // Add other properties of item here as needed
   }),
   onIncreaseQuantity: PropTypes.func,

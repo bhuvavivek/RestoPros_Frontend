@@ -6,12 +6,10 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
-import Stack from '@mui/material/Stack';
 import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import { useRouter } from 'src/routes/hooks';
-import { paths } from 'src/routes/paths';
 
 import { AuthContext } from 'src/auth/context/jwt';
 import { useAuthContext } from 'src/auth/hooks';
@@ -23,18 +21,18 @@ import { useSnackbar } from 'src/components/snackbar';
 // ----------------------------------------------------------------------
 
 const OPTIONS = [
-  {
-    label: 'Home',
-    linkTo: '/',
-  },
-  {
-    label: 'Profile',
-    linkTo: paths.dashboard.user.profile,
-  },
-  {
-    label: 'Settings',
-    linkTo: paths.dashboard.user.account,
-  },
+  // {
+  //   label: 'Home',
+  //   linkTo: '/',
+  // },
+  // {
+  //   label: 'Profile',
+  //   linkTo: paths.dashboard.user.profile,
+  // },
+  // {
+  //   label: 'Settings',
+  //   linkTo: paths.dashboard.user.account,
+  // },
 ];
 
 // ----------------------------------------------------------------------
@@ -54,17 +52,19 @@ export default function AccountPopover() {
     try {
       await logout();
       popover.onClose();
-      router.replace('/');
+      // router.replace('/auth/jwt/login?returnTo=%2Fdashboard%2FmainDashboard');
+      router.push('/dashboard')
+
     } catch (error) {
       console.error(error);
       enqueueSnackbar('Unable to logout!', { variant: 'error' });
     }
   };
 
-  const handleClickItem = (path) => {
-    popover.onClose();
-    router.push(path);
-  };
+  // const handleClickItem = (path) => {
+  //   popover.onClose();
+  //   router.push(path);
+  // };
 
   return (
     <>
@@ -108,7 +108,7 @@ export default function AccountPopover() {
           </Typography>
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        {/* <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack sx={{ p: 1 }}>
           {OPTIONS.map((option) => (
@@ -116,7 +116,7 @@ export default function AccountPopover() {
               {option.label}
             </MenuItem>
           ))}
-        </Stack>
+        </Stack> */}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 

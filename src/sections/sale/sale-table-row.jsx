@@ -28,7 +28,7 @@ export default function SaleTableRow({
   onSelectRow,
   onDeleteRow,
   onEditRow,
-
+  onViewRow,
 }) {
   const {
     order_no,
@@ -44,6 +44,11 @@ export default function SaleTableRow({
   } = row;
 
 
+  const handleCheckboxClick = (event) => {
+    event.stopPropagation();
+    onSelectRow();
+  };
+
 
   const confirm = useBoolean();
 
@@ -51,10 +56,10 @@ export default function SaleTableRow({
 
   return (
     <>
-      <TableRow hover selected={selected}>
+      <TableRow hover selected={selected} onClick={onViewRow} >
 
         <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
+          <Checkbox checked={selected} onClick={handleCheckboxClick} />
         </TableCell>
 
         <TableCell>
@@ -177,4 +182,5 @@ SaleTableRow.propTypes = {
   onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,
+  onViewRow: PropTypes.func
 };

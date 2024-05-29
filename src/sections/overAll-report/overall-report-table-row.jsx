@@ -24,6 +24,7 @@ export default function OverallReportTableRow({
 }) {
   const {
     order_no,
+    grand_total,
     subtotal,
     discount,
     tax,
@@ -60,6 +61,7 @@ export default function OverallReportTableRow({
 
 
 
+        <TableCell> {fCurrency(grand_total)} </TableCell>
         <TableCell> {fCurrency(subtotal)} </TableCell>
         <TableCell> {fPercent(discount)} </TableCell>
         <TableCell> {fCurrency(discountedAmount)} </TableCell>

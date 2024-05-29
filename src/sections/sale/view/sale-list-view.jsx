@@ -288,6 +288,7 @@ export default function SaleListView() {
                             onSelectRow={() => table.onSelectRow(row._id)}
                             onDeleteRow={() => handleDeleteRow(row._id)}
                             onEditRow={() => handleEditRow(row._id)}
+                            onViewRow={() => handleEditRow(row._id)}
                           />
                         ))}
                     </>

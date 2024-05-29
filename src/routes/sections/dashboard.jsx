@@ -127,10 +127,10 @@ export const dashboardRoutes = [
       { path: 'banking', element: <OverviewBankingPage /> },
       { path: 'booking', element: <OverviewBookingPage /> },
       { path: 'file', element: <OverviewFilePage /> },
-      { path: 'mainDashboard', element: <DashboardPage /> },
+      { path: 'mainDashboard', element: <PermissionGuard permission={['USER']}><DashboardPage /></PermissionGuard> },
       {
         path: 'sale',
-        element: <PermissionGuard permission='ORDER'><Outlet /></PermissionGuard>,
+        element: <PermissionGuard permission={['USER']}><Outlet /></PermissionGuard>,
         children: [
           { element: <SaleListPage />, index: true },
           { path: 'list', element: <SaleListPage /> },
@@ -140,39 +140,39 @@ export const dashboardRoutes = [
       },
       {
         path: 'category',
-        element: <PermissionGuard permission='MENU'><CategoryPage /></PermissionGuard>
+        element: <PermissionGuard permission={['MENU']}><CategoryPage /></PermissionGuard>
       }, {
         path: 'food-item',
-        element: <PermissionGuard permission='MENU'>
+        element: <PermissionGuard permission={['MENU']}>
           <FoodItemPage />
         </PermissionGuard>
       },
       {
         path: 'pos',
-        element: <PermissionGuard permission='ORDER'><PosDetailsPage /></PermissionGuard>,
+        element: <PermissionGuard permission={['MENU']}><PosDetailsPage /></PermissionGuard>,
       },
       {
         path: 'service',
-        element: <PermissionGuard permission='TABLE'><ServicePage /> </PermissionGuard>
+        element: <PermissionGuard permission={['MENU', 'TABLE']}><ServicePage /> </PermissionGuard>
       },
       {
         path: 'customer',
-        element: <CustomerPage />
+        element: <CustomerPage permission={['MENU']} />
       },
       {
         path: 'sale-orders',
-        element: <PermissionGuard permission='ORDER'><SaleOrderPage /></PermissionGuard>,
+        element: <PermissionGuard permission={['ORDER', 'MENU']}><SaleOrderPage /></PermissionGuard>,
       },
       {
         path: 'user-permission',
         children: [
-          { element: <PermissionGuard permission='USER'><UserPermissionPage /></PermissionGuard>, index: true },
+          { element: <PermissionGuard permission={['USER']}><UserPermissionPage /></PermissionGuard>, index: true },
         ]
 
       },
       {
         path: 'users',
-        element: <PermissionGuard permission='USER'><Outlet /></PermissionGuard>,
+        element: <PermissionGuard permission={['USER']}><Outlet /></PermissionGuard>,
         children: [
           { element: <UserDetailsPage />, index: true },
           { path: 'new', element: <UserNewPage /> },
@@ -203,6 +203,7 @@ export const dashboardRoutes = [
       },
       {
         path: 'report',
+        element: <PermissionGuard permission={['OverSoldReport']}><Outlet /></PermissionGuard>,
         children: [
           { element: <OverallReport />, index: true },
           { path: 'overall-report', element: <OverallReport /> },

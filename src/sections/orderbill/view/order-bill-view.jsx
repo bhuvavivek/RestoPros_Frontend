@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
+import { useRef, useEffect, useCallback } from 'react';
 
 import Container from '@mui/material/Container';
 
 import { paths } from 'src/routes/paths';
 
-import { fCurrency, fPercent } from 'src/utils/format-number';
+import { fPercent, fCurrency } from 'src/utils/format-number';
 
 import { ORDER_STATUS_OPTIONS } from 'src/_mock';
 import { useGetSingleSale } from 'src/api/sales';
 
-import { LoadingScreen } from 'src/components/loading-screen';
 import { useSettingsContext } from 'src/components/settings';
+import { LoadingScreen } from 'src/components/loading-screen';
 
 import OrderBillToolbar from '../order-bill-toolbar';
 
@@ -67,6 +67,11 @@ export default function OrderBillView({ id }) {
   }
 
 
+  function calculateItemTotalPrice(actualPrice, qunatity) {
+    return actualPrice * qunatity;
+  }
+
+
 
 
   return (
@@ -81,13 +86,20 @@ export default function OrderBillView({ id }) {
         />
         <div id='printSection' ref={printSectionRef} >
           <div className="page" style={{ pageBreakBefore: 'always', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center', margin: '0 auto' }}>
-            <div >
-              <img
-                alt='shop'
-                // alt="Shop Logo"
-                src="/assets/images/logo/KarmaEspresso.png" // Replace with your logo path
-                style={{ width: '60px', height: '60px' }}
-              />
+            <div>
+              <div style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <img
+                  alt='shop'
+                  // alt="Shop Logo"
+                  src="/assets/images/logo/KarmaEspresso.png" // Replace with your logo path
+                  style={{ width: '60px', height: '60px' }}
+                />
+              </div>
 
               {/*  */}
               <div style={
@@ -105,29 +117,46 @@ export default function OrderBillView({ id }) {
                     latterSpacing: '8px',
                     marginTop: '20px'
                   }}>
+
                   <strong style={{
                     fontSize: '17px',
                     textAlign: 'left',
                     fontWeight: 'bold',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+
                   }}>KARMA ESPRESSO</strong>
+
                   <small
                     style={
                       {
                         fontSize: '14px',
                         textAlign: 'left',
                         fontWeight: 'bold',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column'
                       }
                     }>
-                    <div style={{ marginTop: '3px' }}>
+                    <div style={{
+                      marginTop: '3px',
+                    }}>
                       9714473304
                     </div>
                     <div
-                      style={{ marginTop: '3px' }}
+                      style={{
+                        marginTop: '3px',
+                        width: '50%'
+                      }}
                     >
                       266 , 2nd Floor, Laxmi Enclave, 2, Gajera Circle, Katargam, Surat, Gujarat 395004
                     </div>
                   </small>
                 </div>
+
               </div>
 
               {/* this is info sections */}
@@ -146,7 +175,7 @@ export default function OrderBillView({ id }) {
                       fontSize: '14px',
                       textAlign: 'left',
                       fontWeight: 'bold',
-                      marginTop: '3px'
+                      marginTop: '10px'
                     }}>Innovoice Date:</div>
                   <div>{sale?.createdAt?.split('T')[0]}</div>
                 </div>
@@ -241,16 +270,16 @@ export default function OrderBillView({ id }) {
                       }}>
                         <div
                           style={{
-                            // borderBottom: '1.9px solid #000',
+                            borderBottom: '1.9px solid #000',
                             borderLeft: '1.9px solid #000',
                             paddingLeft: '5px',
                           }}
                         >{order?.price} x {order?.quantity} </div>
-                        {/* <div
+                        <div
                           style={{
                             borderLeft: '1.9px solid #000',
                             padding: '5px',
-                          }}>8.00$</div> */}
+                          }}>{calculateItemTotalPrice(order?.price, order?.quantity)}</div>
                       </div>
                     </div>
                   ))}
@@ -370,7 +399,6 @@ export default function OrderBillView({ id }) {
               </div> */}
             </div>
           </div>
-
         </div >
       </Container >
     </div >

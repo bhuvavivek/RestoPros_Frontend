@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import { useContext, useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
+import Drawer from '@mui/material/Drawer';
 
 import { usePathname } from 'src/routes/hooks';
 
@@ -12,12 +12,12 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { AuthContext } from 'src/auth/context/jwt';
 
 import Logo from 'src/components/logo';
-import { NavSectionVertical } from 'src/components/nav-section';
 import Scrollbar from 'src/components/scrollbar';
+import { NavSectionVertical } from 'src/components/nav-section';
 
-import NavToggleButton from '../common/nav-toggle-button';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
+import NavToggleButton from '../common/nav-toggle-button';
 
 // ----------------------------------------------------------------------
 

@@ -270,7 +270,7 @@ export default function PosListView({ id, sale }) {
             sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 1 }}
             onClick={handleOrderSubmit}
           >
-            Submit
+            {id ? 'Update Order' : 'New Order'}
           </Button>
         </Stack>
       </Stack>

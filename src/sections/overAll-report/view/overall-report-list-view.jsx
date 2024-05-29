@@ -48,6 +48,7 @@ import OverallReportTableToolbar from '../overall-report-table-toolbar';
 
 const TABLE_HEAD = [
   { id: 'orderno', label: 'OrdeNo' },
+  { id: 'grandTotal', label: 'Total' },
   { id: 'subtotal', label: 'SubTotal' },
   { id: 'discount', label: 'Discount (%)' },
   { id: 'discountedAmount', label: 'Discount Amount' },
