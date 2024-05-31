@@ -50,7 +50,6 @@ export default function App() {
   useEffect(() => {
     socketService.connect()
 
-
     return () => {
       socketService.disconnect();
     }

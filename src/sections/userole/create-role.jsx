@@ -21,7 +21,7 @@ export default function CreateRoleDialog({ title = 'Create Role', open, onClose,
 
   useEffect(() => {
     if (editData) {
-      setroleName(editData.name || '')
+      setroleName(editData.type || '')
     }
   }, [editData])
 
@@ -36,9 +36,6 @@ export default function CreateRoleDialog({ title = 'Create Role', open, onClose,
   const handleSubmit = async () => {
     const isEdit = editData !== null;
     try {
-
-
-
       const response = isEdit
         ? await axiosInstance.put(endpoints.role.edit(editData._id), {
           type: roleName

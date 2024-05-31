@@ -93,6 +93,7 @@ export const endpoints = {
   role: {
     list: '/api/role/get-roles',
     add: '/api/role/create',
+    edit:(id)=> `/api/role/${id}`
   },
   permissions: {
     list: '/api/admin/get-permissions',
