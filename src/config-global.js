@@ -3,8 +3,9 @@ import { paths } from 'src/routes/paths';
 // API
 // ----------------------------------------------------------------------
 
-export const HOST_API = 'https://restorent-managment-backend.onrender.com';
+// export const HOST_API = 'https://restorent-managment-backend.onrender.com';
 // export const HOST_API = 'http://localhost:8083';
+export const HOST_API = 'http://restro-new-lb-1949100045.ap-south-1.elb.amazonaws.com';
 export const ASSETS_API = import.meta.env.VITE_ASSETS_API;
 
 export const FIREBASE_API = {
@@ -32,4 +33,25 @@ export const AUTH0_API = {
 export const MAPBOX_API = import.meta.env.VITE_MAPBOX_API;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
+
 export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
+
+export const SALE_PATH = paths.dashboard.sale.root;
+
+export const CATEGORY_PATH = paths.dashboard.category;
+
+export const MENU_PATH = paths.dashboard.foodItem;
+
+export const TABLE_PATH = paths.dashboard.service;
+
+export const POS_PATH = paths.dashboard.pos;
+
+export const SALE_ORDER_PATH = paths.dashboard.saleorder;
+
+export const OVERALL_REPORT_PATH = paths.dashboard.report.overallReport;
+
+export const CUSTOMER_PATH = paths.dashboard.customer;
+
+export const USER_PATH = paths.dashboard.users.root;
+
+export const USER_PERMISSION_PATH = paths.dashboard.userpermission.root;

@@ -88,6 +88,8 @@ export default function FoodItemListView() {
   const { categories } = useGetCategories();
 
 
+  const [editData, setEditData] = useState(null);
+
   const confirm = useBoolean();
   const upload = useBoolean();
 
@@ -113,6 +115,7 @@ export default function FoodItemListView() {
 
   // handle popupclose
   const handleClose = () => {
+    setEditData(null)
     upload.onFalse()
   }
 
@@ -181,6 +184,17 @@ export default function FoodItemListView() {
     });
   }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
+
+  // edit Menu
+
+  const handleEditRow = useCallback(
+    (id) => {
+      upload.onTrue();
+      const data = tableData.find(item => item._id === id);
+      setEditData(data);
+    },
+    [upload, tableData]
+  );
 
 
 
@@ -294,6 +308,7 @@ export default function FoodItemListView() {
                             selected={table.selected.includes(row._id)}
                             onSelectRow={() => table.onSelectRow(row._id)}
                             onDeleteRow={() => handleDeleteRow(row._id)}
+                            onEditRow={() => handleEditRow(row._id)}
                           />
                         ))}
                     </>
@@ -324,7 +339,7 @@ export default function FoodItemListView() {
         </Card>
       </Container>
 
-      <CreateFoodItemDialog open={upload.value} onClose={handleClose} categories={categories} expandedQuery={expandedQuery} />
+      <CreateFoodItemDialog open={upload.value} onClose={handleClose} editData={editData} title={`${editData != null ? 'Edit Menu' : 'Create Menu'}`} categories={categories} expandedQuery={expandedQuery} />
 
 
       <ConfirmDialog

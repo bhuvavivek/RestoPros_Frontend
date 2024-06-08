@@ -1,11 +1,8 @@
-import { Helmet } from "react-helmet-async";
+import { Helmet } from 'react-helmet-async';
 
-import { DashboardView } from "src/sections/dashboard/view";
+import { DashboardView } from 'src/sections/dashboard/view';
 
 export default function DashboardPage() {
-
-
-
   return (
     <>
       <Helmet>
@@ -15,5 +12,3 @@ export default function DashboardPage() {
     </>
   );
 }
-
-

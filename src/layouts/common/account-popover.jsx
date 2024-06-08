@@ -1,5 +1,6 @@
 import { m } from 'framer-motion';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router';
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -45,6 +46,7 @@ export default function AccountPopover() {
   const { logout } = useAuthContext();
 
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const popover = usePopover();
 
@@ -52,9 +54,7 @@ export default function AccountPopover() {
     try {
       await logout();
       popover.onClose();
-      // router.replace('/auth/jwt/login?returnTo=%2Fdashboard%2FmainDashboard');
-      router.push('/dashboard')
-
+      router.replace('/auth/jwt/login');
     } catch (error) {
       console.error(error);
       enqueueSnackbar('Unable to logout!', { variant: 'error' });

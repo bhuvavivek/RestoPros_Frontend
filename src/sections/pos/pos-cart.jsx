@@ -1,35 +1,46 @@
 import { useTheme } from '@emotion/react';
 import PropTypes from 'prop-types';
 
-import { Avatar, Card, FormControlLabel, ListItem, ListItemText, Switch, Typography, useMediaQuery } from "@mui/material";
-import { Box, Stack } from "@mui/system";
+import {
+  Avatar,
+  Card,
+  FormControlLabel,
+  ListItem,
+  ListItemText,
+  Switch,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
+import { Box, Stack } from '@mui/system';
 
 import { fCurrency } from 'src/utils/format-number';
 
-import PosIncrementerButton from "./common/pos-incrementer-button";
+import PosIncrementerButton from './common/pos-incrementer-button';
 import { useFoodCartContext } from './context';
 
-
-
-
 export default function PosCartView({ sx, handleCategorySelect, isKot, handlesetIsKot, ...other }) {
-
-  const { items, onIncreaseQuantity, onDecreaseQuantity, onDeleteCart, total } = useFoodCartContext();
-
+  const { items, onIncreaseQuantity, onDecreaseQuantity, onDeleteCart, total } =
+    useFoodCartContext();
 
   return (
-
-    <Box sx={{
-      height: '100%', maxHeight: '500px', overflowY: 'auto', '&::-webskit-scrollbar': {
-        display: 'none'
-      }
-    }}>
-      <Card sx={{
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'column',
-        p: (theme) => theme.spacing(3, 2, 3, 3),
-      }}>
+    <Box
+      sx={{
+        height: '100%',
+        maxHeight: '500px',
+        overflowY: 'auto',
+        '&::-webskit-scrollbar': {
+          display: 'none',
+        },
+      }}
+    >
+      <Card
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+          p: (theme) => theme.spacing(3, 2, 3, 3),
+        }}
+      >
         <FormControlLabel
           sx={{
             width: '100%',
@@ -38,7 +49,7 @@ export default function PosCartView({ sx, handleCategorySelect, isKot, handleset
           }}
           control={
             <Switch
-              size='medium'
+              size="medium"
               value={isKot}
               onChange={(e) => {
                 handlesetIsKot(e.target.checked);
@@ -47,8 +58,21 @@ export default function PosCartView({ sx, handleCategorySelect, isKot, handleset
           }
           label={<Typography variant="h6"> Want KOT ?</Typography>}
         />
-        {items?.map((item) => <FoodItemCardList key={item._id} item={item} onIncreaseQuantity={onIncreaseQuantity} onDecreaseQuantity={onDecreaseQuantity} onDeleteCart={onDeleteCart} />)}
-        <Stack direction="row" justifyContent="space-around" alignItems="center" sx={{ width: 1, marginTop: 3, gap: 15 }}>
+        {items?.map((item) => (
+          <FoodItemCardList
+            key={item._id}
+            item={item}
+            onIncreaseQuantity={onIncreaseQuantity}
+            onDecreaseQuantity={onDecreaseQuantity}
+            onDeleteCart={onDeleteCart}
+          />
+        ))}
+        <Stack
+          direction="row"
+          justifyContent="space-around"
+          alignItems="center"
+          sx={{ width: 1, marginTop: 3, gap: 15 }}
+        >
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
             Total
           </Typography>
@@ -58,7 +82,6 @@ export default function PosCartView({ sx, handleCategorySelect, isKot, handleset
         </Stack>
       </Card>
     </Box>
-
   );
 }
 
@@ -66,45 +89,50 @@ PosCartView.propTypes = {
   sx: PropTypes.object,
   handleCategorySelect: PropTypes.func,
   handlesetIsKot: PropTypes.func,
-  isKot: PropTypes.bool
+  isKot: PropTypes.bool,
 };
 
-
 function FoodItemCardList({ item, onIncreaseQuantity, onDecreaseQuantity, onDeleteCart }) {
-
   const theme = useTheme();
   const isScreenSizeBelowLG = useMediaQuery(theme.breakpoints.down('lg'));
 
   return (
-    <ListItem onClick={() => onDeleteCart(item._id)} sx={{ cursor: 'pointer', flexDirection: { xs: 'column', lg: 'row' } }}>
-      <Avatar alt='demo' src={item?.pictures?.length > 0 ? item?.pictures[0] : 'https://images.unsplash.com/photo-1518635017498-87f514b751ba?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} sx={{ width: 48, height: 48, mr: 2 }} />
+    <ListItem
+      onClick={() => onDeleteCart(item._id)}
+      sx={{ cursor: 'pointer', flexDirection: { xs: 'row', lg: 'row' } }}
+    >
+      <Avatar
+        alt="demo"
+        src={
+          item?.pictures?.length > 0
+            ? item?.pictures?.[0].image
+            : 'https://images.unsplash.com/photo-1518635017498-87f514b751ba?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        }
+        sx={{ width: 48, height: 48, mr: 2 }}
+      />
 
       <ListItemText
         sx={{
           display: 'flex',
           gap: {
-            xs: '8px',
-            lg: '0px'
+            xs: '0px',
+            lg: '0px',
           },
           marginTop: {
-            xs: '5px',
-            lg: '0px'
+            xs: '0px',
+            lg: '0px',
           },
           marginBottom: {
-            xs: '5px',
-            lg: '0px'
+            xs: '0px',
+            lg: '0px',
           },
           flexDirection: {
-            xs: 'row',
-            lg: 'column'
-          }
+            xs: 'column',
+            lg: 'column',
+          },
         }}
         primary={item?.name || item?.menuItems?.itemName}
-        secondary={
-          <>
-            {fCurrency(item?.price)}
-          </>
-        }
+        secondary={<>{fCurrency(item?.price)}</>}
         primaryTypographyProps={{
           noWrap: true,
           typography: 'subtitle2',
@@ -132,15 +160,13 @@ function FoodItemCardList({ item, onIncreaseQuantity, onDecreaseQuantity, onDele
             }} // Update quantity state
             onDecrease={(event) => {
               event.stopPropagation();
-              onDecreaseQuantity(item._id)
+              onDecreaseQuantity(item._id);
             }} // Update quantity state
           />
-
         </Stack>
       </Stack>
-
     </ListItem>
-  )
+  );
 }
 
 FoodItemCardList.propTypes = {
@@ -150,7 +176,7 @@ FoodItemCardList.propTypes = {
     name: PropTypes.string,
     pictures: PropTypes.string,
     _id: PropTypes.string,
-    menuItems: PropTypes.object
+    menuItems: PropTypes.object,
     // Add other properties of item here as needed
   }),
   onIncreaseQuantity: PropTypes.func,

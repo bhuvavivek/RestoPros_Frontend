@@ -53,7 +53,7 @@ export default function FoodItemTableRow({
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar
             alt={name}
-            src={pictures?.[0]}
+            src={pictures?.[0]?.image}
             variant="rounded"
             sx={{ width: 64, height: 64, mr: 2 }}
           />
@@ -95,6 +95,16 @@ export default function FoodItemTableRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
+
+        <MenuItem
+          onClick={() => {
+            onEditRow();
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:pen-bold" />
+          Edit
+        </MenuItem>
 
         <MenuItem
           onClick={() => {

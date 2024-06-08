@@ -32,7 +32,6 @@ const PostDetailsPage = lazy(() => import('src/pages/post/details'));
 const OrderBillPage = lazy(() => import('src/pages/order-bill'));
 // ----------------------------------------------------------------------
 
-
 export const mainRoutes = [
   {
     element: (
@@ -93,13 +92,16 @@ export const mainRoutes = [
       { path: '404', element: <Page404 /> },
       { path: '403', element: <Page403 /> },
     ],
-  }, {
+  },
+  {
     element: (
       <Suspense fallback={<SplashScreen />}>
         <Outlet />
       </Suspense>
-    ), children: [
-      { path: ':id/order-bill', element: <OrderBillPage /> }
-    ]
-  }
+    ),
+    children: [
+      { path: ':id/order-bill', element: <OrderBillPage /> },
+      { path: ':id/kot-bill', element: <OrderBillPage iskot /> },
+    ],
+  },
 ];

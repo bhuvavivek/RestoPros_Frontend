@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 
-import { useRouter, useSearchParams } from 'src/routes/hooks';
+import { useRouter } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -29,10 +29,6 @@ export default function JwtLoginView() {
   const router = useRouter();
 
   const [errorMsg, setErrorMsg] = useState('');
-
-  const searchParams = useSearchParams();
-
-  const returnTo = searchParams.get('returnTo');
 
   const password = useBoolean();
 
@@ -62,8 +58,7 @@ export default function JwtLoginView() {
     try {
       await login?.(data.email, data.password, data.isAdmin);
 
-      router.push(returnTo || PATH_AFTER_LOGIN);
-
+      router.push(PATH_AFTER_LOGIN);
     } catch (error) {
       console.error(error);
       reset();
@@ -126,11 +121,15 @@ export default function JwtLoginView() {
                   size="medium"
                 />
               }
-              label={<Typography variant='h5' color='text.secondary'> Login as Admin</Typography>}
+              label={
+                <Typography variant="h5" color="text.secondary">
+                  {' '}
+                  Login as Admin
+                </Typography>
+              }
             />
           )}
         />
-
       </Stack>
       <LoadingButton
         fullWidth

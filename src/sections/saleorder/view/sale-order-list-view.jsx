@@ -1,11 +1,11 @@
-
+import { useEffect, useState } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 
 import { paths } from 'src/routes/paths';
 
-import { useGetSales } from 'src/api/sales';
+import socketService from 'src/sockets/socket';
 
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import { LoadingScreen } from 'src/components/loading-screen';
@@ -14,47 +14,50 @@ import { useSettingsContext } from 'src/components/settings';
 import SaleOrderList from '../sale-order-list';
 
 export default function SaleOrderListView() {
-  const settings = useSettingsContext()
+  const settings = useSettingsContext();
 
+  const [sales, setSales] = useState([]);
+  const [salesLoading, setSalesLoading] = useState(true);
 
-  // const [sales, setSales] = useState([]);
-  // const [salesLoading, setSalesLoading] = useState(true);
+  useEffect(() => {
+    const connected = socketService.isConnected;
+    if (connected) {
+      // Emit 'get-order' event
+      socketService.emit('get-order', { status: 'pending', expand: 'true', orderList: 'true' });
 
-  const { sales, salesLoading } = useGetSales({
-    expand: true,
-    orderList: true,
-    status: 'pending'
-  })
+      const handleOrders = (data) => {
+        setSales(data?.data?.orders);
+        setSalesLoading(false);
+      };
 
+      const handleError = (error) => {
+        console.error('Error: ', error.message);
+      };
 
-  // useEffect(() => {
-  //   const connected = socketService.isConnected;
-  //   if (connected) {
+      const handleNewOrder = () => {
+        // Emit 'get-order' event again when a new order is received
+        socketService.emit('get-order', { status: 'pending', expand: 'true', orderList: 'true' });
+      };
 
+      const handleUpdateOrder = () => {
+        // Emit 'get-order' event again when an order is updated
+        socketService.emit('get-order', { status: 'pending', expand: 'true', orderList: 'true' });
+      };
 
-  //     // Emit 'get-order' event
-  //     socketService.emit('get-order', { status: "pending" });
+      socketService.on('orders', handleOrders);
+      socketService.on('error', handleError);
+      socketService.on('newOrder', handleNewOrder);
+      socketService.on('updateOrder', handleUpdateOrder);
+    }
 
-  //     socketService.on('orders', (data) => {
-  //       console.log('Received orders: ', data);
-  //       setSales(data);
-  //       setSalesLoading(false);
-  //     });
-
-  //     // Listen for 'error' event
-  //     socketService.on('error', (error) => {
-  //       console.error('Error: ', error.message);
-  //     });
-
-  //   }
-  // }, []);
-
-
+    if (!connected) {
+      console.log('not connected');
+    }
+  }, []);
 
   if (salesLoading) {
-    return <LoadingScreen />
+    return <LoadingScreen />;
   }
-
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -65,12 +68,11 @@ export default function SaleOrderListView() {
           { name: 'Order', href: paths.dashboard.product.root },
           { name: 'List' },
         ]}
-
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 
       <Grid container spacing={3}>
-        {sales.map((sale) => (
+        {sales?.map((sale) => (
           <Grid item xs={12} sm={6} md={6} lg={6} xl={4} key={sale.id}>
             <SaleOrderList sale={sale} />
           </Grid>

@@ -11,9 +11,7 @@ import { useFoodCartContext } from './context';
 
 // ------------------------------------------------------
 
-
 export default function PosItemDetail({ FoodItems }) {
-
   return (
     <Box
       gap={3}
@@ -21,17 +19,13 @@ export default function PosItemDetail({ FoodItems }) {
       gridTemplateColumns={{
         xs: 'repeat(1, 1fr)',
         sm: 'repeat(2, 1fr)',
-        md: 'repeat(3, 1fr)',
+        lg: 'repeat(3, 1fr)',
       }}
-
     >
       {FoodItems?.map((item) => (
-        <PosItem
-          key={item._id}
-          item={item}
-        />
+        <PosItem key={item._id} item={item} />
       ))}
-    </Box >
+    </Box>
   );
 }
 
@@ -48,7 +42,7 @@ function PosItem({ item }) {
   return (
     <Card
       onClick={() => {
-        onAddToCart(item)
+        onAddToCart(item);
       }}
       sx={{
         display: 'flex',
@@ -56,15 +50,15 @@ function PosItem({ item }) {
         p: (theme) => theme.spacing(3, 2, 3, 3),
       }}
     >
-      <Avatar alt={name} src={pictures.length > 0 && pictures[0]} sx={{ width: 48, height: 48, mr: 2 }} />
+      <Avatar
+        alt={name}
+        src={pictures.length > 0 && pictures[0]}
+        sx={{ width: 48, height: 48, mr: 2 }}
+      />
 
       <ListItemText
         primary={name}
-        secondary={
-          <>
-            {fCurrency(price)}
-          </>
-        }
+        secondary={<>{fCurrency(price)}</>}
         primaryTypographyProps={{
           noWrap: true,
           typography: 'subtitle2',
@@ -79,8 +73,6 @@ function PosItem({ item }) {
           color: 'text.disabled',
         }}
       />
-
-
     </Card>
   );
 }

@@ -25,9 +25,7 @@ GuestGuard.propTypes = {
 function Container({ children }) {
   const router = useRouter();
 
-  const searchParams = useSearchParams();
-
-  const returnTo = searchParams.get('returnTo') || paths.dashboard.root;
+  const returnTo = paths.dashboard.root;
 
   const { authenticated } = useAuthContext();
 

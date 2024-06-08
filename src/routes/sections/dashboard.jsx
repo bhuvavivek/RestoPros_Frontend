@@ -63,26 +63,26 @@ const PermissionDeniedPage = lazy(() => import('src/pages/dashboard/permission')
 const BlankPage = lazy(() => import('src/pages/dashboard/blank'));
 
 // this is my pages
-const DashboardPage = lazy(() => import('src/pages/dashboard/dashboard'))
-const IndexPage = lazy(() => import('src/pages/dashboard/dashboard'))
+const DashboardPage = lazy(() => import('src/pages/dashboard/dashboard'));
+const IndexPage = lazy(() => import('src/pages/dashboard/dashboard'));
 
 // sales pages
-const SaleDetailPage = lazy(() => import('src/pages/dashboard/sale/details'))
-const SaleListPage = lazy(() => import('src/pages/dashboard/sale/list'))
+const SaleDetailPage = lazy(() => import('src/pages/dashboard/sale/details'));
+const SaleListPage = lazy(() => import('src/pages/dashboard/sale/list'));
 
 // categories pages
-const CategoryPage = lazy(() => import('src/pages/dashboard/category'))
+const CategoryPage = lazy(() => import('src/pages/dashboard/category'));
 
 // Food-Items  pages
-const FoodItemPage = lazy(() => import('src/pages/dashboard/food-item'))
+const FoodItemPage = lazy(() => import('src/pages/dashboard/food-item'));
 
 // pos
-const PosDetailsPage = lazy(() => import('src/pages/dashboard/pos/pos'))
-const PosEditDetailPage = lazy(() => import('src/pages/dashboard/pos/pos-edit'))
+const PosDetailsPage = lazy(() => import('src/pages/dashboard/pos/pos'));
+const PosEditDetailPage = lazy(() => import('src/pages/dashboard/pos/pos-edit'));
 // service
-const ServicePage = lazy(() => import('src/pages/dashboard/service'))
+const ServicePage = lazy(() => import('src/pages/dashboard/service'));
 // ----------------------------------------------------------------------
-const CustomerPage = lazy(() => import('src/pages/dashboard/customer'))
+const CustomerPage = lazy(() => import('src/pages/dashboard/customer'));
 
 // user
 const UserDetailsPage = lazy(() => import('src/pages/dashboard/userdetails/userdetail'));
@@ -90,23 +90,19 @@ const UserEditPage = lazy(() => import('src/pages/dashboard/userdetails/useredit
 const UserNewPage = lazy(() => import('src/pages/dashboard/userdetails/usernew'));
 
 // userPermission
-const UserPermissionPage = lazy(() => import('src/pages/dashboard/userpermission/user-permission'))
+const UserPermissionPage = lazy(() => import('src/pages/dashboard/userpermission/user-permission'));
 
 // SaleOrder
-const SaleOrderPage = lazy(() => import('src/pages/dashboard/saleorder'))
+const SaleOrderPage = lazy(() => import('src/pages/dashboard/saleorder'));
 
 //  Report
 
-const SoldReport = lazy(() => import('src/pages/dashboard/report/sold-report'))
-const OverallReport = lazy(() => import('src/pages/dashboard/report/overall-report'))
-
+const SoldReport = lazy(() => import('src/pages/dashboard/report/sold-report'));
+const OverallReport = lazy(() => import('src/pages/dashboard/report/overall-report'));
 
 // PermissionRoute ;
 
-const PermissionGuard = lazy(() => import('src/auth/guard/permission-guard'))
-
-
-
+const PermissionGuard = lazy(() => import('src/auth/guard/permission-guard'));
 
 export const dashboardRoutes = [
   {
@@ -127,58 +123,113 @@ export const dashboardRoutes = [
       { path: 'banking', element: <OverviewBankingPage /> },
       { path: 'booking', element: <OverviewBookingPage /> },
       { path: 'file', element: <OverviewFilePage /> },
-      { path: 'mainDashboard', element: <PermissionGuard permission={['USER']}><DashboardPage /></PermissionGuard> },
+      {
+        path: 'mainDashboard',
+        element: (
+          <PermissionGuard permission={['DASHBOARD']}>
+            <DashboardPage />
+          </PermissionGuard>
+        ),
+      },
       {
         path: 'sale',
-        element: <PermissionGuard permission={['USER']}><Outlet /></PermissionGuard>,
+        element: (
+          <PermissionGuard permission={['SALES']}>
+            <Outlet />
+          </PermissionGuard>
+        ),
         children: [
           { element: <SaleListPage />, index: true },
           { path: 'list', element: <SaleListPage /> },
           { path: ':id/edit', element: <SaleDetailPage /> },
-          { path: 'order/:id/edit', element: <PosEditDetailPage /> }
-        ]
+          { path: 'order/:id/edit', element: <PosEditDetailPage /> },
+        ],
       },
       {
         path: 'category',
-        element: <PermissionGuard permission={['MENU']}><CategoryPage /></PermissionGuard>
-      }, {
+        element: (
+          <PermissionGuard permission={['CATEGORY']}>
+            <CategoryPage />
+          </PermissionGuard>
+        ),
+      },
+      {
         path: 'food-item',
-        element: <PermissionGuard permission={['MENU']}>
-          <FoodItemPage />
-        </PermissionGuard>
+        element: (
+          <PermissionGuard permission={['MENU']}>
+            <FoodItemPage />
+          </PermissionGuard>
+        ),
       },
       {
         path: 'pos',
-        element: <PermissionGuard permission={['MENU']}><PosDetailsPage /></PermissionGuard>,
+        element: (
+          <PermissionGuard permission={['MENU']}>
+            <PosDetailsPage />
+          </PermissionGuard>
+        ),
       },
       {
         path: 'service',
-        element: <PermissionGuard permission={['MENU', 'TABLE']}><ServicePage /> </PermissionGuard>
+        element: (
+          <PermissionGuard permission={['TABLE']}>
+            <ServicePage />{' '}
+          </PermissionGuard>
+        ),
       },
       {
         path: 'customer',
-        element: <CustomerPage permission={['MENU']} />
+        element: <CustomerPage permission={['CUSTOMER']} />,
       },
       {
         path: 'sale-orders',
-        element: <PermissionGuard permission={['ORDER', 'MENU']}><SaleOrderPage /></PermissionGuard>,
+        element: (
+          <PermissionGuard permission={['ORDER']}>
+            <SaleOrderPage />
+          </PermissionGuard>
+        ),
       },
       {
         path: 'user-permission',
         children: [
-          { element: <PermissionGuard permission={['USER']}><UserPermissionPage /></PermissionGuard>, index: true },
-        ]
-
+          {
+            element: (
+              <PermissionGuard permission={['ROLE']}>
+                <UserPermissionPage />
+              </PermissionGuard>
+            ),
+            index: true,
+          },
+        ],
       },
       {
         path: 'users',
-        element: <PermissionGuard permission={['USER']}><Outlet /></PermissionGuard>,
+        element: (
+          <PermissionGuard permission={['USER']}>
+            <Outlet />
+          </PermissionGuard>
+        ),
         children: [
           { element: <UserDetailsPage />, index: true },
           { path: 'new', element: <UserNewPage /> },
-          { path: ':id/edit', element: <UserEditPage /> }
-        ]
+          { path: ':id/edit', element: <UserEditPage /> },
+        ],
       },
+      {
+        path: 'report',
+        element: (
+          <PermissionGuard permission={['REPORT']}>
+            <Outlet />
+          </PermissionGuard>
+        ),
+        children: [
+          { element: <OverallReport />, index: true },
+          { path: 'overall-report', element: <OverallReport /> },
+          { path: 'sold-report', element: <SoldReport /> },
+        ],
+      },
+
+      // this is not my code
       {
         path: 'user',
         children: [
@@ -200,15 +251,6 @@ export const dashboardRoutes = [
           { path: 'new', element: <ProductCreatePage /> },
           { path: ':id/edit', element: <ProductEditPage /> },
         ],
-      },
-      {
-        path: 'report',
-        element: <PermissionGuard permission={['OverSoldReport']}><Outlet /></PermissionGuard>,
-        children: [
-          { element: <OverallReport />, index: true },
-          { path: 'overall-report', element: <OverallReport /> },
-          { path: 'sold-report', element: <SoldReport /> },
-        ]
       },
 
       {

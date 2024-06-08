@@ -29,23 +29,17 @@ import PosItemDetail from '../pos-item-list';
 import PosItemSkeleton from '../pos-item-skeleton';
 import PosTableDialog from '../pos-popup';
 
-
-
-
 export default function PosListView({ id, sale }) {
-
-  const settings = useSettingsContext()
+  const settings = useSettingsContext();
 
   const { categories } = useGetCategories();
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   // const expandedQuery = useGetQueryParamsData({ category: selectedCategory ? selectedCategory._id : null });
 
-
-
   const defaultFilter = {
-    search: ''
-  }
+    search: '',
+  };
 
   const [filter, setFilters] = useState(defaultFilter);
   const queryParameters = { expand: true, limit: 1000 };
@@ -60,25 +54,36 @@ export default function PosListView({ id, sale }) {
 
   const [customerSearch, setCustomerSearch] = useState();
 
-  const { customers } = useGetCustomers({ limit: 50, ...(customerSearch && { search: customerSearch }) });
+  const { customers } = useGetCustomers({
+    limit: 50,
+    ...(customerSearch && { search: customerSearch }),
+  });
   const [open, setOpen] = useState(false);
 
-  const { pickedTable, setCustomerId, orderType, customerId, items, onReset, setPickedTable, setOrderType, onAddMultipleToCart, onClearItems } = useFoodCartContext()
+  const {
+    pickedTable,
+    setCustomerId,
+    orderType,
+    customerId,
+    items,
+    onReset,
+    setPickedTable,
+    setOrderType,
+    onAddMultipleToCart,
+    onClearItems,
+  } = useFoodCartContext();
 
   const [customerOptions, setCustomerOptions] = useState(customers);
 
-
-
-  const [isKot, setIsKot] = useState(false)
+  const [isKot, setIsKot] = useState(false);
   const handlesetIsKot = (value) => setIsKot(value);
 
   const upload = useBoolean();
   const navigate = useNavigate('');
 
-
   useEffect(() => {
     if (id && sale) {
-      onClearItems()
+      onClearItems();
       onReset();
       setPickedTable(sale?.table);
       setOrderType(sale?.type);
@@ -90,24 +95,22 @@ export default function PosListView({ id, sale }) {
           filteredItems.push(item);
         }
       });
-      onAddMultipleToCart(filteredItems)
-      console.log(filteredItems)
+      onAddMultipleToCart(filteredItems);
     }
   }, [id, sale]);
 
   useEffect(() => {
-    if (customerSearch && customerSearch.trim() !== "") {
-      setCustomerOptions(customers.filter(
-        customer =>
+    if (customerSearch && customerSearch.trim() !== '') {
+      setCustomerOptions(
+        customers.filter((customer) =>
           // customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
           customer.phone.toString().toLowerCase().includes(customerSearch.toString().toLowerCase())
-      ));
+        )
+      );
     } else {
       setCustomerOptions(customers);
     }
-  }, [customerSearch, customers])
-
-
+  }, [customerSearch, customers]);
 
   useEffect(() => {
     if (pickedTable) {
@@ -115,34 +118,27 @@ export default function PosListView({ id, sale }) {
         setOpen(true);
       }
     }
-  }, [pickedTable, id])
-
+  }, [pickedTable, id]);
 
   const closePopUp = () => {
     setOpen(false);
-  }
-
-
+  };
 
   // select the category
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-
-  }
-
+  };
 
   // function for createOrder
 
   const handleOrderSubmit = async () => {
     try {
-
       let response;
 
       if (id && sale) {
-
         // for update order
         const UpdateOrders = items.map((item) => {
-          const existsInSale = sale?.orderList?.some(saleItem => saleItem._id === item._id);
+          const existsInSale = sale?.orderList?.some((saleItem) => saleItem._id === item._id);
 
           return {
             item_id: existsInSale ? item.item_id : item._id,
@@ -155,22 +151,20 @@ export default function PosListView({ id, sale }) {
           type: orderType,
           table_id: pickedTable?._id,
           customer_id: customerId,
-          Orders: UpdateOrders
+          Orders: UpdateOrders,
         });
       } else {
-
         // for new order
         const NewOrders = items.map((item) => ({
           item_id: item?._id,
-          quantity: item?.quantity
+          quantity: item?.quantity,
         }));
-
 
         response = await axiosInstance.post('/api/order/create', {
           type: orderType,
           table_id: pickedTable._id,
           customer_id: customerId,
-          Orders: NewOrders
+          Orders: NewOrders,
         });
       }
 
@@ -178,25 +172,24 @@ export default function PosListView({ id, sale }) {
 
       if (response.status === statuscode) {
         if (isKot) {
-          const orderId = response?.data?.data?.OrderData?._id
-          navigate(`/${orderId}/order-bill`)
+          const orderId = response?.data?.data?.OrderData?._id;
+          navigate(`/${orderId}/kot-bill`);
           setIsKot(false);
         }
-        enqueueSnackbar(`Order ${id ? 'Updated' : 'Created'} Successfully!!`)
+        enqueueSnackbar(`Order ${id ? 'Updated' : 'Created'} Successfully!!`);
         if (id) {
-          navigate(`/dashboard/sale/${id}/edit`)
+          navigate(`/dashboard/sale/${id}/edit`);
         }
-        onReset()
+        onReset();
       }
     } catch (error) {
-      console.log(error)
-      enqueueSnackbar('Please Try Again Order Not Created!!', { variant: 'error' })
+      console.log(error);
+      enqueueSnackbar('Please Try Again Order Not Created!!', { variant: 'error' });
     }
-  }
-
+  };
 
   return (
-    <Container maxWidth={settings.themeStretch ? false : 'xl'}  >
+    <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       {/* pos search bar menu */}
       <Stack
         spacing={2}
@@ -233,25 +226,23 @@ export default function PosListView({ id, sale }) {
               setCustomerSearch(newInputValue);
             }}
             filterOptions={(options, params) => {
-              const filtered = options.filter((option) => (
-                option.name?.toLowerCase().includes(params.inputValue.toLowerCase()) ||
-                option?.email?.toLowerCase().includes(params.inputValue.toLowerCase()) ||
-                option?.phone?.toString().includes(params.inputValue)
-              ));
+              const filtered = options.filter(
+                (option) =>
+                  option.name?.toLowerCase().includes(params.inputValue.toLowerCase()) ||
+                  option?.email?.toLowerCase().includes(params.inputValue.toLowerCase()) ||
+                  option?.phone?.toString().includes(params.inputValue)
+              );
 
               return filtered;
             }}
           />
-
         </Stack>
 
-        <Stack direction='row' sx={{ width: 1 }} alignItems="center" spacing={2}>
+        <Stack direction="row" sx={{ width: 1 }} alignItems="center" spacing={2}>
           <Button
-            onClick={
-              () => {
-                setOpen(true);
-              }
-            }
+            onClick={() => {
+              setOpen(true);
+            }}
             sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: 1 }}
             variant="contained"
           >
@@ -259,7 +250,12 @@ export default function PosListView({ id, sale }) {
           </Button>
           <Button
             onClick={upload.onTrue}
-            sx={{ fontSize: '15px', paddingTop: '10px', paddingBottom: '10px', width: { xs: 1, lg: '480px' } }}
+            sx={{
+              fontSize: '15px',
+              paddingTop: '10px',
+              paddingBottom: '10px',
+              width: { xs: 1, lg: '480px' },
+            }}
             variant="contained"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
@@ -277,19 +273,17 @@ export default function PosListView({ id, sale }) {
       {/* PosCate categoryDetail component */}
       <PosCategoryDetail list={categories} handleCategorySelect={handleCategorySelect} />
 
-
       <Grid container spacing={2}>
-
         {/* PosItemDetail component taking 8 columns */}
-        <Grid item xs={8}>
+        <Grid item xs={12} md={6} lg={8}>
           <Box
             sx={{
               height: '100%',
               maxHeight: '500px',
               overflowY: 'auto',
               '&::-webskit-scrollbar': {
-                display: 'none'
-              }
+                display: 'none',
+              },
             }}
           >
             {FoodItemsLoading ? <PosItemSkeleton /> : <PosItemDetail FoodItems={FoodItems} />}
@@ -297,25 +291,18 @@ export default function PosListView({ id, sale }) {
         </Grid>
 
         {/* Another component taking 4 columns */}
-        <Grid item xs={4} >
+        <Grid item xs={12} md={6} lg={4}>
           <PosCartView handlesetIsKot={handlesetIsKot} isKot={isKot} />
         </Grid>
       </Grid>
 
       <PosTableDialog open={open} onClose={closePopUp} />
       <CreateCustomerDialog open={upload.value} onClose={upload.onFalse} title="Create Customer" />
-
-
     </Container>
-
-
-
   );
 }
 
-
-
 PosListView.propTypes = {
   id: PropTypes.string,
-  sale: PropTypes.object
-}
+  sale: PropTypes.object,
+};

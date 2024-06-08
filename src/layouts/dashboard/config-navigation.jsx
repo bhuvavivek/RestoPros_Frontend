@@ -46,402 +46,392 @@ const ICONS = {
   foodItem: icon('ic_product'),
   service: icon('ic_label'),
   customer: icon('ic_user'),
-  report: icon('ic_banking')
+  report: icon('ic_banking'),
 };
 
 // ----------------------------------------------------------------------
-
 
 export function useNavData() {
   const { t } = useTranslate();
 
   const { user } = useContext(AuthContext);
 
+  const data = useMemo(() => {
+    const items = [
+      // OVERVIEW
+      // ----------------------------------------------------------------------
+      {
+        subheader: t('overview'),
+        items: [
+          {
+            title: t('Dashboard'),
+            path: paths.dashboard.mainDashboard,
+            icon: ICONS.dashboard,
+            permission: ['USER'],
+          },
 
+          // Sale
+          {
+            title: t('Sale'),
+            path: paths.dashboard.sale.root,
+            icon: ICONS.sale,
+            permission: ['USER'],
+            children: [{ title: t('list'), path: paths.dashboard.sale.root }],
+          },
 
+          // category
+          {
+            title: t('category'),
+            path: paths.dashboard.category,
+            icon: ICONS.folder,
+            permission: ['MENU'],
+          },
 
-  const data = useMemo(
-    () => {
+          // Food Items
+          {
+            title: t('menu'),
+            path: paths.dashboard.foodItem,
+            icon: ICONS.foodItem,
+            permission: ['MENU'],
+          },
+          // service
+          {
+            title: t('table'),
+            path: paths.dashboard.service,
+            icon: ICONS.service,
+            permission: ['TABLE', 'MENU'],
+          },
 
-      const items = [
-        // OVERVIEW
-        // ----------------------------------------------------------------------
-        {
-          subheader: t('overview'),
-          items: [
-            {
-              title: t('Dashboard'),
-              path: paths.dashboard.mainDashboard,
-              icon: ICONS.dashboard,
-              permission: ['USER'],
-            },
+          // pos,
+          {
+            title: t('pos'),
+            path: paths.dashboard.pos,
+            icon: ICONS.ecommerce,
+            permission: ['MENU'],
+          },
+          {
+            title: t('order'),
+            path: paths.dashboard.saleorder,
+            icon: ICONS.order,
+            permission: ['ORDER', 'MENU'],
+          },
+          // Report
+          {
+            title: t('report'),
+            path: paths.dashboard.report.overallReport,
+            icon: ICONS.report,
+            permission: ['OverSoldReport'],
+            children: [
+              {
+                title: t('overAllReport'),
+                path: paths.dashboard.report.overallReport,
+              },
+              {
+                title: t('soldReport'),
+                path: paths.dashboard.report.soldReport,
+              },
+            ],
+          },
+          // Customer
+          {
+            title: t('customer'),
+            path: paths.dashboard.customer,
+            icon: ICONS.customer,
+            permission: ['MENU'],
+          },
+          // User
+          {
+            title: t('userPermission'),
+            path: paths.dashboard.userpermission.root,
+            icon: ICONS.analytics,
+            children: [{ title: t('list'), path: paths.dashboard.userpermission.root }],
+            permission: ['USER'],
+          },
+          {
+            title: t('User'),
+            path: paths.dashboard.users.root,
+            icon: ICONS.analytics,
+            children: [
+              { title: t('list'), path: paths.dashboard.users.root },
+              { title: t('add'), path: paths.dashboard.users.new },
+            ],
+            permission: ['USER'],
+          },
 
-            // Sale
-            {
-              title: t('Sale'),
-              path: paths.dashboard.sale.root,
-              icon: ICONS.sale,
-              permission: ['USER'],
-              children: [
-                { title: t('list'), path: paths.dashboard.sale.root },
-              ],
-            },
+          // this ALL ARE other routes
+          // {
+          //   title: t('app'),
+          //   path: paths.dashboard.root,
+          //   icon: ICONS.dashboard,
+          // },
+          // {
+          //   title: t('ecommerce'),
+          //   path: paths.dashboard.general.ecommerce,
+          //   icon: ICONS.ecommerce,
+          // },
+          // {
+          //   title: t('analytics'),
+          //   path: paths.dashboard.general.analytics,
+          //   icon: ICONS.analytics,
+          // },
+          // {
+          //   title: t('banking'),
+          //   path: paths.dashboard.general.banking,
+          //   icon: ICONS.banking,
+          // },
+          // {
+          //   title: t('booking'),
+          //   path: paths.dashboard.general.booking,
+          //   icon: ICONS.booking,
+          // },
+          // {
+          //   title: t('file'),
+          //   path: paths.dashboard.general.file,
+          //   icon: ICONS.file,
+          // },
+        ],
+      },
 
-            // category
-            {
-              title: t('category'),
-              path: paths.dashboard.category,
-              icon: ICONS.folder,
-              permission: ['MENU'],
-            },
+      // MANAGEMENT
+      // ----------------------------------------------------------------------
+      // {
+      //   subheader: t('management'),
+      //   items: [
+      //     // USER
+      //     {
+      //       title: t('user'),
+      //       path: paths.dashboard.user.root,
+      //       icon: ICONS.user,
+      //       children: [
+      //         { title: t('profile'), path: paths.dashboard.user.root },
+      //         { title: t('cards'), path: paths.dashboard.user.cards },
+      //         { title: t('list'), path: paths.dashboard.user.list },
+      //         { title: t('create'), path: paths.dashboard.user.new },
+      //         { title: t('edit'), path: paths.dashboard.user.demo.edit },
+      //         { title: t('account'), path: paths.dashboard.user.account },
+      //       ],
+      //     },
 
-            // Food Items
-            {
-              title: t('menu'),
-              path: paths.dashboard.foodItem,
-              icon: ICONS.foodItem,
-              permission: ['MENU'],
-            },
-            // service
-            {
-              title: t('service'),
-              path: paths.dashboard.service,
-              icon: ICONS.service,
-              permission: ["TABLE", 'MENU']
-            },
+      //     // PRODUCT
+      //     {
+      //       title: t('product'),
+      //       path: paths.dashboard.product.root,
+      //       icon: ICONS.product,
+      //       children: [
+      //         { title: t('list'), path: paths.dashboard.product.root },
+      //         {
+      //           title: t('details'),
+      //           path: paths.dashboard.product.demo.details,
+      //         },
+      //         { title: t('create'), path: paths.dashboard.product.new },
+      //         { title: t('edit'), path: paths.dashboard.product.demo.edit },
+      //       ],
+      //     },
 
-            // pos,
-            {
-              title: t('pos'),
-              path: paths.dashboard.pos,
-              icon: ICONS.ecommerce,
-              permission: ['MENU']
-            },
-            {
-              title: t('order'),
-              path: paths.dashboard.saleorder,
-              icon: ICONS.order,
-              permission: ["ORDER", 'MENU']
-            },
-            // Report
-            {
-              title: t('report'),
-              path: paths.dashboard.report.overallReport,
-              icon: ICONS.report,
-              permission: ["OverSoldReport"],
-              children: [
-                {
-                  title: t('overAllReport'),
-                  path: paths.dashboard.report.overallReport,
-                },
-                {
-                  title: t('soldReport'),
-                  path: paths.dashboard.report.soldReport,
-                }
-              ]
-            },
-            // Customer
-            {
-              title: t('customer'),
-              path: paths.dashboard.customer,
-              icon: ICONS.customer,
-              permission: ['MENU']
-            },
-            // User
-            {
-              title: t('userPermission'),
-              path: paths.dashboard.userpermission.root,
-              icon: ICONS.analytics,
-              children: [
-                { title: t('list'), path: paths.dashboard.userpermission.root },
-              ],
-              permission: ["USER"]
-            },
-            {
-              title: t('User'),
-              path: paths.dashboard.users.root,
-              icon: ICONS.analytics,
-              children: [
-                { title: t('list'), path: paths.dashboard.users.root },
-                { title: t('add'), path: paths.dashboard.users.new },
-              ],
-              permission: ["USER"]
-            },
+      //     // ORDER
+      //     {
+      //       title: t('order'),
+      //       path: paths.dashboard.order.root,
+      //       icon: ICONS.order,
+      //       children: [
+      //         { title: t('list'), path: paths.dashboard.order.root },
+      //         { title: t('details'), path: paths.dashboard.order.demo.details },
+      //       ],
+      //     },
 
-            // this ALL ARE other routes
-            // {
-            //   title: t('app'),
-            //   path: paths.dashboard.root,
-            //   icon: ICONS.dashboard,
-            // },
-            // {
-            //   title: t('ecommerce'),
-            //   path: paths.dashboard.general.ecommerce,
-            //   icon: ICONS.ecommerce,
-            // },
-            // {
-            //   title: t('analytics'),
-            //   path: paths.dashboard.general.analytics,
-            //   icon: ICONS.analytics,
-            // },
-            // {
-            //   title: t('banking'),
-            //   path: paths.dashboard.general.banking,
-            //   icon: ICONS.banking,
-            // },
-            // {
-            //   title: t('booking'),
-            //   path: paths.dashboard.general.booking,
-            //   icon: ICONS.booking,
-            // },
-            // {
-            //   title: t('file'),
-            //   path: paths.dashboard.general.file,
-            //   icon: ICONS.file,
-            // },
-          ],
-        },
+      //     // INVOICE
+      //     {
+      //       title: t('invoice'),
+      //       path: paths.dashboard.invoice.root,
+      //       icon: ICONS.invoice,
+      //       children: [
+      //         { title: t('list'), path: paths.dashboard.invoice.root },
+      //         {
+      //           title: t('details'),
+      //           path: paths.dashboard.invoice.demo.details,
+      //         },
+      //         { title: t('create'), path: paths.dashboard.invoice.new },
+      //         { title: t('edit'), path: paths.dashboard.invoice.demo.edit },
+      //       ],
+      //     },
 
-        // MANAGEMENT
-        // ----------------------------------------------------------------------
-        // {
-        //   subheader: t('management'),
-        //   items: [
-        //     // USER
-        //     {
-        //       title: t('user'),
-        //       path: paths.dashboard.user.root,
-        //       icon: ICONS.user,
-        //       children: [
-        //         { title: t('profile'), path: paths.dashboard.user.root },
-        //         { title: t('cards'), path: paths.dashboard.user.cards },
-        //         { title: t('list'), path: paths.dashboard.user.list },
-        //         { title: t('create'), path: paths.dashboard.user.new },
-        //         { title: t('edit'), path: paths.dashboard.user.demo.edit },
-        //         { title: t('account'), path: paths.dashboard.user.account },
-        //       ],
-        //     },
+      //     // BLOG
+      //     {
+      //       title: t('blog'),
+      //       path: paths.dashboard.post.root,
+      //       icon: ICONS.blog,
+      //       children: [
+      //         { title: t('list'), path: paths.dashboard.post.root },
+      //         { title: t('details'), path: paths.dashboard.post.demo.details },
+      //         { title: t('create'), path: paths.dashboard.post.new },
+      //         { title: t('edit'), path: paths.dashboard.post.demo.edit },
+      //       ],
+      //     },
 
-        //     // PRODUCT
-        //     {
-        //       title: t('product'),
-        //       path: paths.dashboard.product.root,
-        //       icon: ICONS.product,
-        //       children: [
-        //         { title: t('list'), path: paths.dashboard.product.root },
-        //         {
-        //           title: t('details'),
-        //           path: paths.dashboard.product.demo.details,
-        //         },
-        //         { title: t('create'), path: paths.dashboard.product.new },
-        //         { title: t('edit'), path: paths.dashboard.product.demo.edit },
-        //       ],
-        //     },
+      //     // JOB
+      //     {
+      //       title: t('job'),
+      //       path: paths.dashboard.job.root,
+      //       icon: ICONS.job,
+      //       children: [
+      //         { title: t('list'), path: paths.dashboard.job.root },
+      //         { title: t('details'), path: paths.dashboard.job.demo.details },
+      //         { title: t('create'), path: paths.dashboard.job.new },
+      //         { title: t('edit'), path: paths.dashboard.job.demo.edit },
+      //       ],
+      //     },
 
-        //     // ORDER
-        //     {
-        //       title: t('order'),
-        //       path: paths.dashboard.order.root,
-        //       icon: ICONS.order,
-        //       children: [
-        //         { title: t('list'), path: paths.dashboard.order.root },
-        //         { title: t('details'), path: paths.dashboard.order.demo.details },
-        //       ],
-        //     },
+      //     // TOUR
+      //     {
+      //       title: t('tour'),
+      //       path: paths.dashboard.tour.root,
+      //       icon: ICONS.tour,
+      //       children: [
+      //         { title: t('list'), path: paths.dashboard.tour.root },
+      //         { title: t('details'), path: paths.dashboard.tour.demo.details },
+      //         { title: t('create'), path: paths.dashboard.tour.new },
+      //         { title: t('edit'), path: paths.dashboard.tour.demo.edit },
+      //       ],
+      //     },
 
-        //     // INVOICE
-        //     {
-        //       title: t('invoice'),
-        //       path: paths.dashboard.invoice.root,
-        //       icon: ICONS.invoice,
-        //       children: [
-        //         { title: t('list'), path: paths.dashboard.invoice.root },
-        //         {
-        //           title: t('details'),
-        //           path: paths.dashboard.invoice.demo.details,
-        //         },
-        //         { title: t('create'), path: paths.dashboard.invoice.new },
-        //         { title: t('edit'), path: paths.dashboard.invoice.demo.edit },
-        //       ],
-        //     },
+      //     // FILE MANAGER
+      //     {
+      //       title: t('file_manager'),
+      //       path: paths.dashboard.fileManager,
+      //       icon: ICONS.folder,
+      //     },
 
-        //     // BLOG
-        //     {
-        //       title: t('blog'),
-        //       path: paths.dashboard.post.root,
-        //       icon: ICONS.blog,
-        //       children: [
-        //         { title: t('list'), path: paths.dashboard.post.root },
-        //         { title: t('details'), path: paths.dashboard.post.demo.details },
-        //         { title: t('create'), path: paths.dashboard.post.new },
-        //         { title: t('edit'), path: paths.dashboard.post.demo.edit },
-        //       ],
-        //     },
+      //     // MAIL
+      //     {
+      //       title: t('mail'),
+      //       path: paths.dashboard.mail,
+      //       icon: ICONS.mail,
+      //       info: <Label color="error">+32</Label>,
+      //     },
 
-        //     // JOB
-        //     {
-        //       title: t('job'),
-        //       path: paths.dashboard.job.root,
-        //       icon: ICONS.job,
-        //       children: [
-        //         { title: t('list'), path: paths.dashboard.job.root },
-        //         { title: t('details'), path: paths.dashboard.job.demo.details },
-        //         { title: t('create'), path: paths.dashboard.job.new },
-        //         { title: t('edit'), path: paths.dashboard.job.demo.edit },
-        //       ],
-        //     },
+      //     // CHAT
+      //     {
+      //       title: t('chat'),
+      //       path: paths.dashboard.chat,
+      //       icon: ICONS.chat,
+      //     },
 
-        //     // TOUR
-        //     {
-        //       title: t('tour'),
-        //       path: paths.dashboard.tour.root,
-        //       icon: ICONS.tour,
-        //       children: [
-        //         { title: t('list'), path: paths.dashboard.tour.root },
-        //         { title: t('details'), path: paths.dashboard.tour.demo.details },
-        //         { title: t('create'), path: paths.dashboard.tour.new },
-        //         { title: t('edit'), path: paths.dashboard.tour.demo.edit },
-        //       ],
-        //     },
+      //     // CALENDAR
+      //     {
+      //       title: t('calendar'),
+      //       path: paths.dashboard.calendar,
+      //       icon: ICONS.calendar,
+      //     },
 
-        //     // FILE MANAGER
-        //     {
-        //       title: t('file_manager'),
-        //       path: paths.dashboard.fileManager,
-        //       icon: ICONS.folder,
-        //     },
+      //     // KANBAN
+      //     {
+      //       title: t('kanban'),
+      //       path: paths.dashboard.kanban,
+      //       icon: ICONS.kanban,
+      //     },
+      //   ],
+      // },
 
-        //     // MAIL
-        //     {
-        //       title: t('mail'),
-        //       path: paths.dashboard.mail,
-        //       icon: ICONS.mail,
-        //       info: <Label color="error">+32</Label>,
-        //     },
+      // DEMO MENU STATES
+      // {
+      //   subheader: t(t('other_cases')),
+      //   items: [
+      //     {
+      //       // default roles : All roles can see this entry.
+      //       // roles: ['user'] Only users can see this item.
+      //       // roles: ['admin'] Only admin can see this item.
+      //       // roles: ['admin', 'manager'] Only admin/manager can see this item.
+      //       // Reference from 'src/guards/RoleBasedGuard'.
+      //       title: t('item_by_roles'),
+      //       path: paths.dashboard.permission,
+      //       icon: ICONS.lock,
+      //       roles: ['admin', 'manager'],
+      //       caption: t('only_admin_can_see_this_item'),
+      //     },
+      //     {
+      //       title: t('menu_level'),
+      //       path: '#/dashboard/menu_level',
+      //       icon: ICONS.menuItem,
+      //       children: [
+      //         {
+      //           title: t('menu_level_1a'),
+      //           path: '#/dashboard/menu_level/menu_level_1a',
+      //         },
+      //         {
+      //           title: t('menu_level_1b'),
+      //           path: '#/dashboard/menu_level/menu_level_1b',
+      //           children: [
+      //             {
+      //               title: t('menu_level_2a'),
+      //               path: '#/dashboard/menu_level/menu_level_1b/menu_level_2a',
+      //             },
+      //             {
+      //               title: t('menu_level_2b'),
+      //               path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b',
+      //               children: [
+      //                 {
+      //                   title: t('menu_level_3a'),
+      //                   path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3a',
+      //                 },
+      //                 {
+      //                   title: t('menu_level_3b'),
+      //                   path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3b',
+      //                 },
+      //               ],
+      //             },
+      //           ],
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       title: t('item_disabled'),
+      //       path: '#disabled',
+      //       icon: ICONS.disabled,
+      //       disabled: true,
+      //     },
+      //     {
+      //       title: t('item_label'),
+      //       path: '#label',
+      //       icon: ICONS.label,
+      //       info: (
+      //         <Label color="info" startIcon={<Iconify icon="solar:bell-bing-bold-duotone" />}>
+      //           NEW
+      //         </Label>
+      //       ),
+      //     },
+      //     {
+      //       title: t('item_caption'),
+      //       path: '#caption',
+      //       icon: ICONS.menuItem,
+      //       caption:
+      //         'Quisque malesuada placerat nisl. In hac habitasse platea dictumst. Cras id dui. Pellentesque commodo eros a enim. Morbi mollis tellus ac sapien.',
+      //     },
+      //     {
+      //       title: t('item_external_link'),
+      //       path: 'https://www.google.com/',
+      //       icon: ICONS.external,
+      //     },
+      //     {
+      //       title: t('blank'),
+      //       path: paths.dashboard.blank,
+      //       icon: ICONS.blank,
+      //     },
+      //   ],
+      // }
+    ];
 
-        //     // CHAT
-        //     {
-        //       title: t('chat'),
-        //       path: paths.dashboard.chat,
-        //       icon: ICONS.chat,
-        //     },
+    // Filter items based on user permissions
+    if (user?.type !== 'admin') {
+      items.forEach((item) => {
+        item.items = item.items.filter(
+          (subItem) =>
+            !subItem?.permission || subItem?.permission?.some((p) => user?.permissions?.includes(p))
+        );
+      });
+    }
 
-        //     // CALENDAR
-        //     {
-        //       title: t('calendar'),
-        //       path: paths.dashboard.calendar,
-        //       icon: ICONS.calendar,
-        //     },
-
-        //     // KANBAN
-        //     {
-        //       title: t('kanban'),
-        //       path: paths.dashboard.kanban,
-        //       icon: ICONS.kanban,
-        //     },
-        //   ],
-        // },
-
-        // DEMO MENU STATES
-        // {
-        //   subheader: t(t('other_cases')),
-        //   items: [
-        //     {
-        //       // default roles : All roles can see this entry.
-        //       // roles: ['user'] Only users can see this item.
-        //       // roles: ['admin'] Only admin can see this item.
-        //       // roles: ['admin', 'manager'] Only admin/manager can see this item.
-        //       // Reference from 'src/guards/RoleBasedGuard'.
-        //       title: t('item_by_roles'),
-        //       path: paths.dashboard.permission,
-        //       icon: ICONS.lock,
-        //       roles: ['admin', 'manager'],
-        //       caption: t('only_admin_can_see_this_item'),
-        //     },
-        //     {
-        //       title: t('menu_level'),
-        //       path: '#/dashboard/menu_level',
-        //       icon: ICONS.menuItem,
-        //       children: [
-        //         {
-        //           title: t('menu_level_1a'),
-        //           path: '#/dashboard/menu_level/menu_level_1a',
-        //         },
-        //         {
-        //           title: t('menu_level_1b'),
-        //           path: '#/dashboard/menu_level/menu_level_1b',
-        //           children: [
-        //             {
-        //               title: t('menu_level_2a'),
-        //               path: '#/dashboard/menu_level/menu_level_1b/menu_level_2a',
-        //             },
-        //             {
-        //               title: t('menu_level_2b'),
-        //               path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b',
-        //               children: [
-        //                 {
-        //                   title: t('menu_level_3a'),
-        //                   path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3a',
-        //                 },
-        //                 {
-        //                   title: t('menu_level_3b'),
-        //                   path: '#/dashboard/menu_level/menu_level_1b/menu_level_2b/menu_level_3b',
-        //                 },
-        //               ],
-        //             },
-        //           ],
-        //         },
-        //       ],
-        //     },
-        //     {
-        //       title: t('item_disabled'),
-        //       path: '#disabled',
-        //       icon: ICONS.disabled,
-        //       disabled: true,
-        //     },
-        //     {
-        //       title: t('item_label'),
-        //       path: '#label',
-        //       icon: ICONS.label,
-        //       info: (
-        //         <Label color="info" startIcon={<Iconify icon="solar:bell-bing-bold-duotone" />}>
-        //           NEW
-        //         </Label>
-        //       ),
-        //     },
-        //     {
-        //       title: t('item_caption'),
-        //       path: '#caption',
-        //       icon: ICONS.menuItem,
-        //       caption:
-        //         'Quisque malesuada placerat nisl. In hac habitasse platea dictumst. Cras id dui. Pellentesque commodo eros a enim. Morbi mollis tellus ac sapien.',
-        //     },
-        //     {
-        //       title: t('item_external_link'),
-        //       path: 'https://www.google.com/',
-        //       icon: ICONS.external,
-        //     },
-        //     {
-        //       title: t('blank'),
-        //       path: paths.dashboard.blank,
-        //       icon: ICONS.blank,
-        //     },
-        //   ],
-        // }
-      ]
-
-      // Filter items based on user permissions
-      if (user?.type !== 'admin') {
-        items.forEach((item) => {
-          item.items = item.items.filter((subItem) => !subItem.permission || subItem.permission.some(p => user.permissions?.includes(p)));
-        });
-      }
-
-      return items;
-
-    },
-    [t, user]
-  );
+    return items;
+  }, [t, user]);
 
   return data;
 }

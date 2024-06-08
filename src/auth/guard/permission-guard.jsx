@@ -6,13 +6,13 @@ import { AuthContext } from '../context/jwt'; // replace with your actual UserCo
 
 function PermissionGuard({ children, permission }) {
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [checked, setChecked] = useState(false);
 
   const check = useCallback(() => {
-    if (user?.type !== 'admin' && (permission.some(p => !user?.permissions?.includes(p)))) {
-      navigate("/dashboard/mainDashboard");
+    if (user?.type !== 'admin' && permission?.some((p) => !user?.permissions?.includes(p))) {
+      navigate('/dashboard/mainDashboard');
     } else {
       setChecked(true);
     }
@@ -22,12 +22,9 @@ function PermissionGuard({ children, permission }) {
     check();
   }, [check]);
 
-
-
   if (user?.type !== 'admin' && !checked) {
     return null;
   }
-
 
   return <>{children}</>;
 }
