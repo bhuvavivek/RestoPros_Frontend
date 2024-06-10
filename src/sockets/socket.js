@@ -1,7 +1,9 @@
 import { io } from 'socket.io-client';
 
+import { HOST_API } from 'src/config-global';
+
 // const SOCKET_URL = 'http://localhost:8083';
-const SOCKET_URL = 'http://restro-new-lb-1949100045.ap-south-1.elb.amazonaws.com';
+const SOCKET_URL = HOST_API;
 
 class SocketService {
   constructor() {

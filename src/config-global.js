@@ -5,7 +5,7 @@ import { paths } from 'src/routes/paths';
 
 // export const HOST_API = 'https://restorent-managment-backend.onrender.com';
 // export const HOST_API = 'http://localhost:8083';
-export const HOST_API = 'http://restro-new-lb-1949100045.ap-south-1.elb.amazonaws.com';
+export const HOST_API = import.meta.env.VITE_HOST_API;
 export const ASSETS_API = import.meta.env.VITE_ASSETS_API;
 
 export const FIREBASE_API = {
