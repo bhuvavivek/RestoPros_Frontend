@@ -6,7 +6,7 @@ import { endpoints, fetcher } from "src/utils/axios";
 export function useGetServices() {
   const URL = endpoints.service.list;
 
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
+  const { data, isLoading, error, isValidating  , mutate} = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(
     () => ({
@@ -15,8 +15,9 @@ export function useGetServices() {
       servicesError: error,
       servicesValidating: isValidating,
       servicesEmpty: !isLoading && !data?.data.length,
+      refetch : ()=>mutate()
     }),
-    [data?.data, error, isLoading, isValidating]
+    [data?.data, error, isLoading, isValidating,mutate]
   );
 
   return memoizedValue;

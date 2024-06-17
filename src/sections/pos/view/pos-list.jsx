@@ -180,6 +180,7 @@ export default function PosListView({ id, sale }) {
         if (id) {
           navigate(`/dashboard/sale/${id}/edit`);
         }
+
         onReset();
       }
     } catch (error) {
