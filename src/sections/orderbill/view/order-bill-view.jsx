@@ -43,7 +43,10 @@ export default function OrderBillView({ id, iskot }) {
     // After the image is loaded, write the content to the iframe and print
     loadImagePromise
       .then(() => {
-        pri.document.write(printSectionRef.current.innerHTML);
+        let content = printSectionRef.current.innerHTML;
+        // Remove the URL from the content
+        content = content.replace(/http[s]?:\/\/[^ ]+/g, '');
+        pri.document.write(content);
         pri.document.close();
         pri.focus();
         pri.print();
@@ -72,7 +75,6 @@ export default function OrderBillView({ id, iskot }) {
     return actualPrice * qunatity;
   }
 
-
   function convertToIST(timeString) {
     // Parse the time string into a Date object
     const date = new Date(timeString);
@@ -86,13 +88,13 @@ export default function OrderBillView({ id, iskot }) {
     const timeStr = istDate.toLocaleString('en-US', options);
 
     return timeStr;
-}
+  }
 
-function quantityTotal() {
-  const QTYARRAY = sale?.orderList?.map((order,i)=>order.quantity);
-  const total = QTYARRAY.reduce((sum, quantity) => sum + quantity, 0);
-  return total;
-}
+  function quantityTotal() {
+    const QTYARRAY = sale?.orderList?.map((order, i) => order.quantity);
+    const total = QTYARRAY.reduce((sum, quantity) => sum + quantity, 0);
+    return total;
+  }
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', minHeight: '100vh' }}>
@@ -319,35 +321,28 @@ function quantityTotal() {
                   <div>{sale?.customer?.phone}</div>
                 </div>
 
-                <div style={{
-                width:'100%',
-                display: 'grid',
-                gridTemplateColumns:!iskot ? '2fr 1fr 1fr 1fr' : '3fr 1fr',
-                borderTop:'1.9px solid #000',
-                borderBottom:'1.9px solid #000',
-                marginTop:'2px',
-                marginBottom:'2px',
-              }}>
-                <div>
-                  No.Item
-                </div>
                 <div
-                 style={{
-                  justifySelf:!iskot?'start':'end'
-                }}
+                  style={{
+                    width: '100%',
+                    display: 'grid',
+                    gridTemplateColumns: !iskot ? '2fr 1fr 1fr 1fr' : '3fr 1fr',
+                    borderTop: '1.9px solid #000',
+                    borderBottom: '1.9px solid #000',
+                    marginTop: '2px',
+                    marginBottom: '2px',
+                  }}
                 >
-                  Qty.
+                  <div>No.Item</div>
+                  <div
+                    style={{
+                      justifySelf: !iskot ? 'start' : 'end',
+                    }}
+                  >
+                    Qty.
+                  </div>
+                  {!iskot && <div>Price</div>}
+                  {!iskot && <div style={{ justifySelf: 'end' }}>Amount</div>}
                 </div>
-                {!iskot && <div>
-                   Price
-                </div>
-                }
-                {!iskot && <div
-                style={{justifySelf: 'end'}}
-                >
-                Amount
-                </div>}
-              </div>
                 <div
                   style={{
                     marginTop: '10px',
@@ -357,84 +352,85 @@ function quantityTotal() {
                     <div
                       style={{
                         display: 'grid',
-                        gridTemplateColumns:!iskot ? '2fr 1fr 1fr 1fr':'3fr 1fr',
+                        gridTemplateColumns: !iskot ? '2fr 1fr 1fr 1fr' : '3fr 1fr',
                         paddingTop: '5px',
                         marginTop: '7px',
                       }}
                     >
                       <div>
                         {' '}
-                        <span style={{
-                          marginRight:'10px'
-                        }}>{index + 1}</span>
+                        <span
+                          style={{
+                            marginRight: '10px',
+                          }}
+                        >
+                          {index + 1}
+                        </span>
                         {order?.menuItems?.itemName}
                       </div>
 
                       <div
-                      style={{
-                        justifySelf:!iskot?'start':'end'
-                      }}
+                        style={{
+                          justifySelf: !iskot ? 'start' : 'end',
+                        }}
                       >
-                            {order?.quantity}{' '}
+                        {order?.quantity}{' '}
                       </div>
 
-                  { !iskot && <div >
-                        {order?.price}
-                      </div>
-                      }
+                      {!iskot && <div>{order?.price}</div>}
 
-                  {!iskot &&    <div style={{
-                          justifySelf: 'end'
-                         }}>
-                         {calculateItemTotalPrice(order?.quantity,order?.price) }
-                         </div>
-
-                         }
+                      {!iskot && (
+                        <div
+                          style={{
+                            justifySelf: 'end',
+                          }}
+                        >
+                          {calculateItemTotalPrice(order?.quantity, order?.price)}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
 
-                  <div style={{
-                    width:'100%',
-                    border:'1.5px solid #000',
-                    marginTop: '10px',
-                    marginBottom: '10px',
-                  }} />
+              <div
+                style={{
+                  width: '100%',
+                  border: '1.5px solid #000',
+                  marginTop: '10px',
+                  marginBottom: '10px',
+                }}
+              />
 
               {/* this is total section */}
 
-                  {
-                    iskot && (
-                      <div style={{
-                        width:'100%',
-                        display:'flex',
-                        justifyContent:'space-between',
-                        paddingBottom:'10px',
-                        borderBottom:'1.9px solid #000',
+              {iskot && (
+                <div
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    paddingBottom: '10px',
+                    borderBottom: '1.9px solid #000',
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    Qty. Total
+                  </div>
 
-                      }}>
-                        <div
-                        style={{
-                          fontWeight:'bold'
-                        }}
-                        >
-                        Qty. Total
-                        </div>
-
-                        <div
-                        style={{
-                          fontWeight:'bold'
-                        }}
-                        >
-                        {
-                        quantityTotal()
-                        }
-                        </div>
-
-                      </div>
-                    )
-                  }
+                  <div
+                    style={{
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {quantityTotal()}
+                  </div>
+                </div>
+              )}
 
               {!iskot && (
                 <div
@@ -540,10 +536,10 @@ function quantityTotal() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      borderTop:'1.9px solid #000',
-                      borderBottom:'1.9px solid #000',
-                      marginTop:'2px',
-                      marginBottom:'2px',
+                      borderTop: '1.9px solid #000',
+                      borderBottom: '1.9px solid #000',
+                      marginTop: '2px',
+                      marginBottom: '2px',
                     }}
                   >
                     <div
