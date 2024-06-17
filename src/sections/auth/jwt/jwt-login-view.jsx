@@ -12,12 +12,9 @@ import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 
-import { useRouter } from 'src/routes/hooks';
-
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { useAuthContext } from 'src/auth/hooks';
-import { PATH_AFTER_LOGIN } from 'src/config-global';
 
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Iconify from 'src/components/iconify';
@@ -26,9 +23,9 @@ import Iconify from 'src/components/iconify';
 export default function JwtLoginView() {
   const { login } = useAuthContext();
 
-  const router = useRouter();
 
   const [errorMsg, setErrorMsg] = useState('');
+
 
   const password = useBoolean();
 
@@ -55,10 +52,10 @@ export default function JwtLoginView() {
   } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
+
     try {
       await login?.(data.email, data.password, data.isAdmin);
 
-      router.push(PATH_AFTER_LOGIN);
     } catch (error) {
       console.error(error);
       reset();

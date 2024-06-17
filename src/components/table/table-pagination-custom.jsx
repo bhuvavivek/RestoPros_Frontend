@@ -12,6 +12,7 @@ export default function TablePaginationCustom({
   onChangeDense,
   rowsPerPageOptions = [5, 10, 25],
   sx,
+  iscustomer,
   ...other
 }) {
 
@@ -19,7 +20,7 @@ export default function TablePaginationCustom({
   return (
     <Box sx={{ position: 'relative', ...sx }}>
       <TablePagination
-        rowsPerPageOptions={rowsPerPageOptions}
+        rowsPerPageOptions={iscustomer ? 5 : rowsPerPageOptions}
         component="div"
         {...other}
         sx={{
@@ -50,4 +51,5 @@ TablePaginationCustom.propTypes = {
   onChangeDense: PropTypes.func,
   rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number),
   sx: PropTypes.object,
+  iscustomer:PropTypes.bool
 };

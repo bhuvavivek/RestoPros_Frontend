@@ -79,9 +79,10 @@ export default function SaleListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
   const [limit, setLimit] = useState(5);
+  const [tablepage,setTablePage]=useState(1);
 
 
-  const { sales, salesLoading, salesEmpty, totaldocuments } = useGetSales({ page: 1, per_page: limit, expand: 'true' });
+  const { sales, salesLoading, salesEmpty, totaldocuments } = useGetSales({ page: tablepage, per_page: limit, expand: 'true' });
 
   const [currentCustomer, setCurrentCustomer] = useState();
 
@@ -312,7 +313,11 @@ export default function SaleListView() {
             page={table.page}
             rowsPerPage={table.rowsPerPage}
             onPageChange={handlePageChange}
-            onRowsPerPageChange={table.onChangeRowsPerPage}
+            onRowsPerPageChange={(event) => {
+              const newRowsPerPage = event.target.value;
+              table.onChangeRowsPerPage(event);
+              setLimit(newRowsPerPage);
+          }}
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
@@ -374,6 +379,5 @@ function applyFilter({ inputData, comparator, filters }) {
 
 
   return inputData;
-
 
 }

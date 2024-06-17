@@ -89,7 +89,7 @@ export default function SaleDetailsItems({
               alignItems="center"
               sx={{
                 py: 3,
-                minWidth: 640,
+                minWidth: '100%',
                 borderBottom: (theme) => `dashed 2px ${theme.palette.background.neutral}`,
               }}
             >

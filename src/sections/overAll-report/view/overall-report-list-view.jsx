@@ -291,15 +291,15 @@ export default function OverallReportListView() {
 
                 <TableBody>
                   {overAllReportLoading ? (
-                    [...Array(table.rowsPerPage)].map((i, index) => (
+                    [...Array(10)].map((i, index) => (
                       <TableSkeleton key={index} sx={{ height: denseHeight }} />
                     ))
                   ) : (
                     <>
                       {dataFiltered
                         .slice(
-                          table.page * table.rowsPerPage,
-                          table.page * table.rowsPerPage + table.rowsPerPage
+                          table.page * 10,
+                          table.page * 10 + 10
                         )
                         .map((row) => (
                           <OverallReportTableRow
@@ -328,9 +328,10 @@ export default function OverallReportListView() {
           <TablePaginationCustom
             count={dataFiltered.length}
             page={table.page}
-            rowsPerPage={table.rowsPerPage}
+            rowsPerPage={10}
             onPageChange={table.onChangePage}
             onRowsPerPageChange={table.onChangeRowsPerPage}
+            iscustomer
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}

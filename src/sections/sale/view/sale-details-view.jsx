@@ -37,7 +37,7 @@ export default function SaleDetailsView({ id }) {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <OrderDetailsToolbar
-        backLink={paths.dashboard.order.root}
+        backLink={paths.dashboard.sale.root}
         orderNumber={sale?.order_no}
         createdAt={sale?.createdAt}
         status={sale?.status}

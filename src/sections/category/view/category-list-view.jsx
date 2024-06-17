@@ -2,16 +2,16 @@
 
 
 import isEqual from 'lodash/isEqual';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import Card from '@mui/material/Card';
-import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
+import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
+import Tooltip from '@mui/material/Tooltip';
 
 import { paths } from 'src/routes/paths';
 
@@ -21,27 +21,27 @@ import axiosInstance, { endpoints } from 'src/utils/axios';
 
 import { useGetCategories } from 'src/api/category';
 
+import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { ConfirmDialog } from 'src/components/custom-dialog';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 import {
-  useTable,
   emptyRows,
-  TableNoData,
   getComparator,
-  TableSkeleton,
   TableEmptyRows,
   TableHeadCustom,
-  TableSelectedAction,
+  TableNoData,
   TablePaginationCustom,
+  TableSelectedAction,
+  TableSkeleton,
+  useTable,
 } from 'src/components/table';
 
-import CategoryTableRow from '../category-table-row';
-import CreateCategoryDialog from '../create-category';
-import CategoryTableToolbar from '../category-table-toolbar';
 import CategoryTableFiltersResult from '../category-table-filters-result';
+import CategoryTableRow from '../category-table-row';
+import CategoryTableToolbar from '../category-table-toolbar';
+import CreateCategoryDialog from '../create-category';
 
 // ----------------------------------------------------------------------
 
@@ -272,15 +272,15 @@ export default function CategoryListView() {
 
                 <TableBody>
                   {categoriesLoading ? (
-                    [...Array(table.rowsPerPage)].map((i, index) => (
+                    [...Array(10)].map((i, index) => (
                       <TableSkeleton key={index} sx={{ height: denseHeight }} />
                     ))
                   ) : (
                     <>
                       {dataFiltered
                         .slice(
-                          table.page * table.rowsPerPage,
-                          table.page * table.rowsPerPage + table.rowsPerPage
+                          table.page * 10,
+                          table.page * 10 + 10
                         )
                         .map((row) => (
                           <CategoryTableRow
@@ -310,8 +310,9 @@ export default function CategoryListView() {
           <TablePaginationCustom
             count={dataFiltered.length}
             page={table.page}
-            rowsPerPage={table.rowsPerPage}
+            rowsPerPage={10}
             onPageChange={table.onChangePage}
+            iscustomer
             onRowsPerPageChange={table.onChangeRowsPerPage}
             //
             dense={table.dense}

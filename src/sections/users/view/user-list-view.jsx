@@ -305,7 +305,11 @@ export default function UserListView() {
             page={table.page}
             rowsPerPage={table.rowsPerPage}
             onPageChange={handlePageChange}
-            onRowsPerPageChange={table.onChangeRowsPerPage}
+            onRowsPerPageChange={(event) => {
+              const newRowsPerPage = event.target.value;
+              table.onChangeRowsPerPage(event);
+              setLimit(newRowsPerPage);
+          }}
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}

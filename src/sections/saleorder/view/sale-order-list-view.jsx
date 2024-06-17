@@ -47,7 +47,7 @@ export default function SaleOrderListView() {
       socketService.on('orders', handleOrders);
       socketService.on('error', handleError);
       socketService.on('newOrder', handleNewOrder);
-      socketService.on('updateOrder', handleUpdateOrder);
+      socketService.on('updatedOrder', handleUpdateOrder);
     }
 
     if (!connected) {

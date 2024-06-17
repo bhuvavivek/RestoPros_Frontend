@@ -117,7 +117,14 @@ export const dashboardRoutes = [
       </AuthGuard>
     ),
     children: [
-      { element: <IndexPage />, index: true },
+      {
+        element: (
+          <PermissionGuard permission={['DASHBOARD']}>
+            <IndexPage />
+          </PermissionGuard>
+        ),
+        index: true,
+      },
       { path: 'ecommerce', element: <OverviewEcommercePage /> },
       { path: 'analytics', element: <OverviewAnalyticsPage /> },
       { path: 'banking', element: <OverviewBankingPage /> },
