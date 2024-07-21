@@ -111,4 +111,8 @@ export const endpoints = {
     mostSold: '/api/report/most-sold',
     overAll: '/api/report/overall',
   },
+  download: {
+    customerReport: '/api/customer/download',
+    salesReport: '/api/report/download',
+  },
 };

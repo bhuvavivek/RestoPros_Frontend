@@ -10,6 +10,7 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import Tooltip from '@mui/material/Tooltip';
+import { Stack } from '@mui/system';
 
 import { paths } from 'src/routes/paths';
 
@@ -43,7 +44,6 @@ import OverallReportTableFiltersResult from '../overall-report-filters-result';
 import OverallReportTableRow from '../overall-report-table-row';
 import OverallReportTableToolbar from '../overall-report-table-toolbar';
 
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -63,13 +63,13 @@ const TABLE_HEAD = [
 const PaymentOption = [
   { label: 'Online', value: 'online' },
   { label: 'Cash', value: 'cash' },
-]
+];
 
 const OrderTypeOption = [
   { label: 'Dinning', value: 'dinning' },
   { label: 'Pickup', value: 'pickup' },
   { label: 'Without Table', value: 'BookWithoutTable' },
-]
+];
 
 const defaultFilters = {
   orderNo: '',
@@ -77,12 +77,9 @@ const defaultFilters = {
   endDate: null,
 };
 
-
 // ----------------------------------------------------------------------
 
 export default function OverallReportListView() {
-
-
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -96,29 +93,27 @@ export default function OverallReportListView() {
   const [paymentMode, setPaymentMode] = useState();
   const [orderType, setOrderType] = useState();
 
-  const { overAllReport, overAllReportEmpty, overAllReportLoading, totalAmount, totalDiscount, totalTax } = useGetOverall({
+  const {
+    overAllReport,
+    overAllReportEmpty,
+    overAllReportLoading,
+    totalAmount,
+    totalDiscount,
+    totalTax,
+  } = useGetOverall({
     ...(duration && { duration: duration.value }),
     ...(search && { name: search }),
-    ...((duration && duration.value === 'manual') ? (filters.startDate && { startDate: convertToUTCDate(filters.startDate) }) : {}),
-    ...((duration && duration.value === 'manual') ? (filters.endDate && { endDate: convertToUTCDate(filters.endDate) }) : {}),
-    ...((paymentMode && { PaymentMethod: paymentMode.value })),
-    ...((orderType && { type: orderType.value }))
-
+    ...(duration && duration.value === 'manual'
+      ? filters.startDate && { startDate: convertToUTCDate(filters.startDate) }
+      : {}),
+    ...(duration && duration.value === 'manual'
+      ? filters.endDate && { endDate: convertToUTCDate(filters.endDate) }
+      : {}),
+    ...(paymentMode && { PaymentMethod: paymentMode.value }),
+    ...(orderType && { type: orderType.value }),
   });
 
   const confirm = useBoolean();
-
-  // // code for pagination
-  // const handlePageChange = useCallback((event, newPage) => {
-  //   // Call the original onChangePage function
-  //   table.onChangePage(event, newPage);
-
-  //   setLimit((newPage + 1) * table.rowsPerPage)
-
-  // }, [table]);
-
-
-
 
   //  here i m fetching category data and set data
   useEffect(() => {
@@ -126,7 +121,6 @@ export default function OverallReportListView() {
       setTableData(overAllReport);
     }
   }, [overAllReport]);
-
 
   const dateError =
     filters.startDate && filters.endDate
@@ -164,16 +158,15 @@ export default function OverallReportListView() {
   // this is a code for delete a row
   const handleDeleteRow = useCallback(
     async (id) => {
-
       try {
-        const response = await axiosInstance.delete(endpoints.foodItem.delete(id))
+        const response = await axiosInstance.delete(endpoints.foodItem.delete(id));
         if (response.status === 200) {
           const deleteRow = tableData.filter((row) => row._id !== id);
           setTableData(deleteRow);
           table.onUpdatePageDeleteRow(dataInPage.length);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
     [dataInPage.length, table, tableData]
@@ -191,22 +184,17 @@ export default function OverallReportListView() {
     });
   }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
-
-
-
-
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
-    setSearch()
-    setDuration()
-    setPaymentMode()
-    setOrderType()
+    setSearch();
+    setDuration();
+    setPaymentMode();
+    setOrderType();
   }, []);
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-
         {/* this is  my category head code  */}
         <CustomBreadcrumbs
           heading="List"
@@ -218,13 +206,37 @@ export default function OverallReportListView() {
             },
             { name: 'List' },
           ]}
+          action={
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              justifyContent="end"
+              alignItems="center"
+              gap={2}
+            >
+              <Button
+                onClick={() => {
+                  axiosInstance.get(endpoints.download.salesReport);
+                }}
+                variant="contained"
+                startIcon={<Iconify icon="bx:download" />}
+              >
+                Sales Report
+              </Button>
+              <Button
+                onClick={() => {
+                  axiosInstance.get(endpoints.download.customerReport);
+                }}
+                variant="contained"
+                startIcon={<Iconify icon="bx:download" />}
+              >
+                Customer Report
+              </Button>
+            </Stack>
+          }
           sx={{ mb: { xs: 3, md: 5 } }}
         />
 
-
-
         <Card>
-
           <OverallReportTableToolbar
             filters={filters}
             setSearch={setSearch}
@@ -296,20 +308,15 @@ export default function OverallReportListView() {
                     ))
                   ) : (
                     <>
-                      {dataFiltered
-                        .slice(
-                          table.page * 10,
-                          table.page * 10 + 10
-                        )
-                        .map((row) => (
-                          <OverallReportTableRow
-                            key={row._id}
-                            row={row}
-                            selected={table.selected.includes(row._id)}
-                            onSelectRow={() => table.onSelectRow(row._id)}
-                            onDeleteRow={() => handleDeleteRow(row._id)}
-                          />
-                        ))}
+                      {dataFiltered.slice(table.page * 10, table.page * 10 + 10).map((row) => (
+                        <OverallReportTableRow
+                          key={row._id}
+                          row={row}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={() => handleDeleteRow(row._id)}
+                        />
+                      ))}
                     </>
                   )}
 
@@ -339,29 +346,18 @@ export default function OverallReportListView() {
         </Card>
 
         <Grid container columnSpacing={3} rowGap={3} marginTop={3}>
-          <Grid item xs={12} md={4} >
-            <DashboardWidgetSummery
-              title="Total Amount "
-              total={totalAmount}
-            />
+          <Grid item xs={12} md={4}>
+            <DashboardWidgetSummery title="Total Amount " total={totalAmount} />
           </Grid>
 
-          <Grid item xs={12} md={4} >
-            <DashboardWidgetSummery
-              title="Total Tax "
-              total={totalTax}
-            />
+          <Grid item xs={12} md={4}>
+            <DashboardWidgetSummery title="Total Tax " total={totalTax} />
           </Grid>
 
-          <Grid item xs={12} md={4} >
-            <DashboardWidgetSummery
-              title="Total Discount "
-              total={totalDiscount}
-            />
+          <Grid item xs={12} md={4}>
+            <DashboardWidgetSummery title="Total Discount " total={totalDiscount} />
           </Grid>
-
         </Grid>
-
       </Container>
 
       <ConfirmDialog
@@ -393,8 +389,6 @@ export default function OverallReportListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-
-
   const { orderNo } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
@@ -409,7 +403,9 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (orderNo) {
     inputData = inputData.filter((report) => {
-      const orderNoMatch = orderNo ? report?.order_no.toString().toLowerCase().includes(orderNo?.toLowerCase()) : true;
+      const orderNoMatch = orderNo
+        ? report?.order_no.toString().toLowerCase().includes(orderNo?.toLowerCase())
+        : true;
       return orderNoMatch;
     });
   }

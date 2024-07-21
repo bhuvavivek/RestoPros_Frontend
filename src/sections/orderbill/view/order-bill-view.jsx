@@ -46,9 +46,9 @@ export default function OrderBillView({ id, iskot }) {
         let content = printSectionRef.current.innerHTML;
         // Remove the URL from the content
         content = content.replace(/http[s]?:\/\/[^ ]+/g, '');
-        pri.document.write(content);
         pri.document.close();
         pri.focus();
+        pri.document.write(content);
         pri.print();
       })
       .catch((error) => {

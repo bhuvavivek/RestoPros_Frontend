@@ -76,7 +76,6 @@ export function useNavData() {
             path: paths.dashboard.sale.root,
             icon: ICONS.sale,
             permission: ['SALES'],
-            children: [{ title: t('list'), path: paths.dashboard.sale.root }],
           },
 
           // category
@@ -137,14 +136,13 @@ export function useNavData() {
             title: t('customer'),
             path: paths.dashboard.customer,
             icon: ICONS.customer,
-            permission: ['MENU','CUSTOMER'],
+            permission: ['MENU', 'CUSTOMER'],
           },
           // User
           {
             title: t('user Role'),
             path: paths.dashboard.userpermission.root,
             icon: ICONS.analytics,
-            children: [{ title: t('list'), path: paths.dashboard.userpermission.root }],
             permission: ['ROLE'],
           },
           {
