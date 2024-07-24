@@ -4,6 +4,10 @@ export function emptyRows(page, rowsPerPage, arrayLength) {
   return page ? Math.max(0, (1 + page) * rowsPerPage - arrayLength) : 0;
 }
 
+export function customEmptyRows(page, rowsPerPage, arrayLength) {
+  return page ? Math.max(0, rowsPerPage - arrayLength) : 0;
+}
+
 function descendingComparator(a, b, orderBy) {
   if (a[orderBy] === null) {
     return 1;

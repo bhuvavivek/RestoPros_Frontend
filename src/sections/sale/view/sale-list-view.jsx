@@ -1,6 +1,3 @@
-
-
-
 import isEqual from 'lodash/isEqual';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -28,7 +25,7 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import {
-  emptyRows,
+  customEmptyRows,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
@@ -58,18 +55,15 @@ const TABLE_HEAD = [
   { id: '', width: 88 },
 ];
 
-
 const defaultFilters = {
   name: '',
   emailAddress: '',
-  phoneNumber: ''
+  phoneNumber: '',
 };
 
 // ----------------------------------------------------------------------
 
 export default function SaleListView() {
-
-
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -79,10 +73,13 @@ export default function SaleListView() {
   const [filters, setFilters] = useState(defaultFilters);
 
   const [limit, setLimit] = useState(5);
-  const [tablepage,setTablePage]=useState(1);
+  const [tablepage, setTablePage] = useState(1);
 
-
-  const { sales, salesLoading, salesEmpty, totaldocuments } = useGetSales({ page: tablepage, per_page: limit, expand: 'true' });
+  const { sales, salesLoading, salesEmpty, totaldocuments } = useGetSales({
+    page: table.page + 1,
+    per_page: table.rowsPerPage,
+    expand: 'true',
+  });
 
   const [currentCustomer, setCurrentCustomer] = useState();
 
@@ -90,23 +87,16 @@ export default function SaleListView() {
   const upload = useBoolean();
   const navigate = useNavigate();
 
-
-
-  // handle popupclose
-  const handleClose = () => {
-    setCurrentCustomer()
-    upload.onFalse()
-  }
-
   // code for pagination
-  const handlePageChange = useCallback((event, newPage) => {
-    // Call the original onChangePage function
-    table.onChangePage(event, newPage);
+  const handlePageChange = useCallback(
+    (event, newPage) => {
+      // Call the original onChangePage function
+      table.onChangePage(event, newPage);
 
-    setLimit((newPage + 1) * table.rowsPerPage)
-  }, [table]);
-
-
+      setLimit((newPage + 1) * table.rowsPerPage);
+    },
+    [table]
+  );
 
   //  here i m fetching category data and set data
   useEffect(() => {
@@ -148,28 +138,25 @@ export default function SaleListView() {
   const handleEditRow = useCallback(
     (id) => {
       upload.onTrue();
-      const data = tableData.find(item => item._id === id);
+      const data = tableData.find((item) => item._id === id);
       setCurrentCustomer(data);
-      navigate(`/dashboard/sale/${id}/edit`)
+      navigate(`/dashboard/sale/${id}/edit`);
     },
     [upload, tableData, navigate]
   );
 
-
-
   // this is a code for delete a row
   const handleDeleteRow = useCallback(
     async (id) => {
-
       try {
-        const response = await axiosInstance.delete(endpoints.customer.delete(id))
+        const response = await axiosInstance.delete(endpoints.customer.delete(id));
         if (response.status === 200) {
           const deleteRow = tableData.filter((row) => row._id !== id);
           setTableData(deleteRow);
           table.onUpdatePageDeleteRow(dataInPage.length);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
     [dataInPage.length, table, tableData]
@@ -187,17 +174,13 @@ export default function SaleListView() {
     });
   }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
-
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
 
-
-
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-
         {/* this is  my category head code  */}
         <CustomBreadcrumbs
           heading="List"
@@ -209,16 +192,11 @@ export default function SaleListView() {
             },
             { name: 'List' },
           ]}
-
           sx={{ mb: { xs: 3, md: 5 } }}
         />
 
         <Card>
-
-          <SaleTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-          />
+          <SaleTableToolbar filters={filters} onFilters={handleFilters} />
 
           {canReset && (
             <SaleTableFiltersResult
@@ -276,33 +254,27 @@ export default function SaleListView() {
                     ))
                   ) : (
                     <>
-                      {dataFiltered
-                        .slice(
-                          table.page * table.rowsPerPage,
-                          table.page * table.rowsPerPage + table.rowsPerPage
-                        )
-                        .map((row) => (
-                          <SaleTableRow
-                            key={row._id}
-                            row={row}
-                            selected={table.selected.includes(row._id)}
-                            onSelectRow={() => table.onSelectRow(row._id)}
-                            onDeleteRow={() => handleDeleteRow(row._id)}
-                            onEditRow={() => handleEditRow(row._id)}
-                            onViewRow={() => handleEditRow(row._id)}
-                          />
-                        ))}
+                      {dataFiltered.map((row) => (
+                        <SaleTableRow
+                          key={row._id}
+                          row={row}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={() => handleDeleteRow(row._id)}
+                          onEditRow={() => handleEditRow(row._id)}
+                          onViewRow={() => handleEditRow(row._id)}
+                        />
+                      ))}
                     </>
                   )}
 
                   <TableEmptyRows
                     height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                    emptyRows={customEmptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
 
                   <TableNoData notFound={notFound} />
                 </TableBody>
-
               </Table>
             </Scrollbar>
           </TableContainer>
@@ -317,7 +289,7 @@ export default function SaleListView() {
               const newRowsPerPage = event.target.value;
               table.onChangeRowsPerPage(event);
               setLimit(newRowsPerPage);
-          }}
+            }}
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
@@ -326,7 +298,6 @@ export default function SaleListView() {
       </Container>
 
       {/* <CreateCustomerDialog open={upload.value} onClose={handleClose} title={`${!currentCustomer ? 'Create Customer' : 'Edit Customer'}`} currentCustomer={currentCustomer} /> */}
-
 
       <ConfirmDialog
         open={confirm.value}
@@ -370,14 +341,18 @@ function applyFilter({ inputData, comparator, filters }) {
   inputData = stabilizedThis.map((el) => el[0]);
 
   inputData = inputData.filter((customer) => {
-    const nameMatch = name ? customer?.customer?.name.toLowerCase().includes(name.toLowerCase()) : true;
-    const emailAddressMatch = emailAddress ? customer?.customer?.email?.toLowerCase().includes(emailAddress.toLowerCase()) : true;
-    const phoneNumberMatch = phoneNumber ? customer?.customer?.phone.toString().includes(phoneNumber.toString()) : true;
+    const nameMatch = name
+      ? customer?.customer?.name.toLowerCase().includes(name.toLowerCase())
+      : true;
+    const emailAddressMatch = emailAddress
+      ? customer?.customer?.email?.toLowerCase().includes(emailAddress.toLowerCase())
+      : true;
+    const phoneNumberMatch = phoneNumber
+      ? customer?.customer?.phone.toString().includes(phoneNumber.toString())
+      : true;
     const orderNoMatch = name ? customer?.order_no?.toString().includes(name.toString()) : true;
     return nameMatch || emailAddressMatch || phoneNumberMatch || orderNoMatch;
   });
 
-
   return inputData;
-
 }

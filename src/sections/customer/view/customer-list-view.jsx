@@ -1,6 +1,3 @@
-
-
-
 import isEqual from 'lodash/isEqual';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -27,7 +24,7 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import {
-  emptyRows,
+  customEmptyRows,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
@@ -52,52 +49,52 @@ const TABLE_HEAD = [
   { id: '', width: 88 },
 ];
 
-
 const defaultFilters = {
   name: '',
   emailAddress: '',
-  phoneNumber: ''
+  phoneNumber: '',
 };
 
 // ----------------------------------------------------------------------
 
 export default function CustomerListView() {
-
-
   const table = useTable();
 
   const settings = useSettingsContext();
 
   const [tableData, setTableData] = useState([]);
 
-  const [search, setSearch] = useState()
+  const [search, setSearch] = useState();
   const [filters, setFilters] = useState(defaultFilters);
 
   const [limit, setLimit] = useState(5);
-  const { customers, customersLoading, customersEmpty, totalDocuments } = useGetCustomers({ limit, ...(search && { search }) });
+  const { customers, customersLoading, customersEmpty, totalDocuments } = useGetCustomers({
+    page: table.page + 1,
+    limit: table.rowsPerPage,
+    ...(search && { search }),
+  });
 
   const [currentCustomer, setCurrentCustomer] = useState();
 
   const confirm = useBoolean();
   const upload = useBoolean();
 
-
-
-
   // handle popupclose
   const handleClose = () => {
-    setCurrentCustomer()
-    upload.onFalse()
-  }
+    setCurrentCustomer();
+    upload.onFalse();
+  };
 
   // code for pagination
-  const handlePageChange = useCallback((event, newPage) => {
-    // Call the original onChangePage function
-    table.onChangePage(event, newPage);
+  const handlePageChange = useCallback(
+    (event, newPage) => {
+      // Call the original onChangePage function
+      table.onChangePage(event, newPage);
 
-    setLimit((newPage + 1) * table.rowsPerPage)
-
-  }, [table]);
+      setLimit((newPage + 1) * table.rowsPerPage);
+    },
+    [table]
+  );
 
   //  here i m fetching category data and set data
   useEffect(() => {
@@ -139,27 +136,24 @@ export default function CustomerListView() {
   const handleEditRow = useCallback(
     (id) => {
       upload.onTrue();
-      const data = tableData.find(item => item._id === id);
+      const data = tableData.find((item) => item._id === id);
       setCurrentCustomer(data);
     },
     [upload, tableData]
   );
 
-
-
   // this is a code for delete a row
   const handleDeleteRow = useCallback(
     async (id) => {
-
       try {
-        const response = await axiosInstance.delete(endpoints.customer.delete(id))
+        const response = await axiosInstance.delete(endpoints.customer.delete(id));
         if (response.status === 200) {
           const deleteRow = tableData.filter((row) => row._id !== id);
           setTableData(deleteRow);
           table.onUpdatePageDeleteRow(dataInPage.length);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
     [dataInPage.length, table, tableData]
@@ -177,10 +171,6 @@ export default function CustomerListView() {
     });
   }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
-
-
-
-
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
     setSearch();
@@ -189,7 +179,6 @@ export default function CustomerListView() {
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-
         {/* this is  my category head code  */}
         <CustomBreadcrumbs
           heading="List"
@@ -214,12 +203,7 @@ export default function CustomerListView() {
         />
 
         <Card>
-
-          <CustomerTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            setSearch={setSearch}
-          />
+          <CustomerTableToolbar filters={filters} onFilters={handleFilters} setSearch={setSearch} />
 
           {canReset && (
             <CustomerTableFiltersResult
@@ -277,27 +261,22 @@ export default function CustomerListView() {
                     ))
                   ) : (
                     <>
-                      {dataFiltered
-                        .slice(
-                          table.page * table.rowsPerPage,
-                          table.page * table.rowsPerPage + table.rowsPerPage
-                        )
-                        .map((row) => (
-                          <CustomerTableRow
-                            key={row._id}
-                            row={row}
-                            selected={table.selected.includes(row._id)}
-                            onSelectRow={() => table.onSelectRow(row._id)}
-                            onDeleteRow={() => handleDeleteRow(row._id)}
-                            onEditRow={() => handleEditRow(row._id)}
-                          />
-                        ))}
+                      {dataFiltered.map((row) => (
+                        <CustomerTableRow
+                          key={row._id}
+                          row={row}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={() => handleDeleteRow(row._id)}
+                          onEditRow={() => handleEditRow(row._id)}
+                        />
+                      ))}
                     </>
                   )}
 
                   <TableEmptyRows
                     height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                    emptyRows={customEmptyRows(table.page, table.rowsPerPage, tableData.length)}
                   />
 
                   <TableNoData notFound={notFound} />
@@ -316,8 +295,7 @@ export default function CustomerListView() {
               const newRowsPerPage = event.target.value;
               table.onChangeRowsPerPage(event);
               setLimit(newRowsPerPage);
-          }}
-
+            }}
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
@@ -325,8 +303,12 @@ export default function CustomerListView() {
         </Card>
       </Container>
 
-      <CreateCustomerDialog open={upload.value} onClose={handleClose} title={`${!currentCustomer ? 'Create Customer' : 'Edit Customer'}`} currentCustomer={currentCustomer} />
-
+      <CreateCustomerDialog
+        open={upload.value}
+        onClose={handleClose}
+        title={`${!currentCustomer ? 'Create Customer' : 'Edit Customer'}`}
+        currentCustomer={currentCustomer}
+      />
 
       <ConfirmDialog
         open={confirm.value}
@@ -371,13 +353,14 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = inputData.filter((customer) => {
     const nameMatch = name ? customer?.name?.toLowerCase().includes(name.toLowerCase()) : true;
-    const emailAddressMatch = emailAddress ? customer?.email?.toLowerCase().includes(emailAddress.toLowerCase()) : true;
-    const phoneNumberMatch = phoneNumber ? customer?.phone?.toString().includes(phoneNumber.toString()) : true;
+    const emailAddressMatch = emailAddress
+      ? customer?.email?.toLowerCase().includes(emailAddress.toLowerCase())
+      : true;
+    const phoneNumberMatch = phoneNumber
+      ? customer?.phone?.toString().includes(phoneNumber.toString())
+      : true;
     return nameMatch || emailAddressMatch || phoneNumberMatch;
   });
 
-
   return inputData;
-
-
 }

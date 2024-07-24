@@ -1,6 +1,3 @@
-
-
-
 import isEqual from 'lodash/isEqual';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useEffect, useState } from 'react';
@@ -29,7 +26,7 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import {
-  emptyRows,
+  customEmptyRows,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
@@ -53,18 +50,15 @@ const TABLE_HEAD = [
   { id: '', width: 88 },
 ];
 
-
 const defaultFilters = {
   name: '',
   emailAddress: '',
-  phoneNumber: ''
+  phoneNumber: '',
 };
 
 // ----------------------------------------------------------------------
 
 export default function UserListView() {
-
-
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -74,23 +68,29 @@ export default function UserListView() {
   const [search, setSearch] = useState();
   const [filters, setFilters] = useState(defaultFilters);
 
-  const [limit, setLimit] = useState(5)
+  const [limit, setLimit] = useState(5);
 
-  const { users, usersLoading, usersEmpty, totalDocuments } = useGetUsers({ limit, expand: "true", ...(search && { search }) });
+  const { users, usersLoading, usersEmpty, totalDocuments } = useGetUsers({
+    page: table.page + 1,
+    limit: table.rowsPerPage,
+    expand: 'true',
+    ...(search && { search }),
+  });
 
   const navigate = useNavigate();
 
   const confirm = useBoolean();
 
   // code for pagination
-  const handlePageChange = useCallback((event, newPage) => {
-    // Call the original onChangePage function
-    table.onChangePage(event, newPage);
+  const handlePageChange = useCallback(
+    (event, newPage) => {
+      // Call the original onChangePage function
+      table.onChangePage(event, newPage);
 
-    setLimit((newPage + 1) * table.rowsPerPage)
-
-  }, [table]);
-
+      setLimit((newPage + 1) * table.rowsPerPage);
+    },
+    [table]
+  );
 
   //  here i m fetching category data and set data
   useEffect(() => {
@@ -131,29 +131,25 @@ export default function UserListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-
-      const data = tableData.find(item => item._id === id);
-      navigate(`/dashboard/users/${id}/edit`, { state: data })
+      const data = tableData.find((item) => item._id === id);
+      navigate(`/dashboard/users/${id}/edit`, { state: data });
     },
     [tableData, navigate]
   );
 
-
-
   // this is a code for delete a row
   const handleDeleteRow = useCallback(
     async (id) => {
-
       try {
-        const response = await axiosInstance.delete(endpoints.user.delete(id))
+        const response = await axiosInstance.delete(endpoints.user.delete(id));
         if (response.status === 200) {
           const deleteRow = tableData.filter((row) => row._id !== id);
           setTableData(deleteRow);
           table.onUpdatePageDeleteRow(dataInPage.length);
         }
       } catch (error) {
-        enqueueSnackbar('Try Again!!', { variant: 'error' })
-        console.log(error)
+        enqueueSnackbar('Try Again!!', { variant: 'error' });
+        console.log(error);
       }
     },
     [dataInPage.length, table, tableData]
@@ -173,13 +169,12 @@ export default function UserListView() {
 
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
-    setSearch()
+    setSearch();
   }, []);
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-
         {/* this is  my category head code  */}
         <CustomBreadcrumbs
           heading="List"
@@ -194,7 +189,7 @@ export default function UserListView() {
           action={
             <Button
               onClick={() => {
-                navigate(`/dashboard/users/new`)
+                navigate(`/dashboard/users/new`);
               }}
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
@@ -206,13 +201,7 @@ export default function UserListView() {
         />
 
         <Card>
-
-          <UserTableToolbar
-            filters={filters}
-            onFilters={handleFilters}
-            setSearch={setSearch}
-          />
-
+          <UserTableToolbar filters={filters} onFilters={handleFilters} setSearch={setSearch} />
 
           {canReset && (
             <UserTableFiltersResult
@@ -270,27 +259,22 @@ export default function UserListView() {
                     ))
                   ) : (
                     <>
-                      {dataFiltered
-                        .slice(
-                          table.page * table.rowsPerPage,
-                          table.page * table.rowsPerPage + table.rowsPerPage
-                        )
-                        .map((row) => (
-                          <UserTableRow
-                            key={row._id}
-                            row={row}
-                            selected={table.selected.includes(row._id)}
-                            onSelectRow={() => table.onSelectRow(row._id)}
-                            onDeleteRow={() => handleDeleteRow(row._id)}
-                            onEditRow={() => handleEditRow(row._id)}
-                          />
-                        ))}
+                      {dataFiltered.map((row) => (
+                        <UserTableRow
+                          key={row._id}
+                          row={row}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={() => handleDeleteRow(row._id)}
+                          onEditRow={() => handleEditRow(row._id)}
+                        />
+                      ))}
                     </>
                   )}
 
                   <TableEmptyRows
                     height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                    emptyRows={customEmptyRows(table.page, table.rowsPerPage, tableData.length)}
                   />
 
                   <TableNoData notFound={notFound} />
@@ -309,7 +293,7 @@ export default function UserListView() {
               const newRowsPerPage = event.target.value;
               table.onChangeRowsPerPage(event);
               setLimit(newRowsPerPage);
-          }}
+            }}
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
@@ -360,13 +344,14 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = inputData.filter((user) => {
     const nameMatch = name ? user?.name?.toLowerCase().includes(name.toLowerCase()) : true;
-    const emailAddressMatch = emailAddress ? user?.email?.toLowerCase().includes(emailAddress.toLowerCase()) : true;
-    const phoneNumberMatch = phoneNumber ? user?.phone_no?.toString().includes(phoneNumber.toString()) : true;
+    const emailAddressMatch = emailAddress
+      ? user?.email?.toLowerCase().includes(emailAddress.toLowerCase())
+      : true;
+    const phoneNumberMatch = phoneNumber
+      ? user?.phone_no?.toString().includes(phoneNumber.toString())
+      : true;
     return nameMatch || emailAddressMatch || phoneNumberMatch;
   });
 
-
   return inputData;
-
-
 }

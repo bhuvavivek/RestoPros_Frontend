@@ -1,6 +1,3 @@
-
-
-
 import isEqual from 'lodash/isEqual';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -29,7 +26,7 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import {
-  emptyRows,
+  customEmptyRows,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
@@ -46,7 +43,6 @@ import FoodItemTableToolbar from 'src/sections/food-item/food-item-table-toolbar
 
 import CreateFoodItemDialog from '../create-food-item';
 
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -56,7 +52,6 @@ const TABLE_HEAD = [
   { id: 'description', label: 'Description', width: 160 },
   { id: '', width: 88 },
 ];
-
 
 const defaultFilters = {
   name: '',
@@ -68,8 +63,6 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function FoodItemListView() {
-
-
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -78,46 +71,46 @@ export default function FoodItemListView() {
 
   const [filters, setFilters] = useState(defaultFilters);
 
-
-  const [limit, setLimit] = useState(5)
+  const [limit, setLimit] = useState(5);
   const [custmPaginationQuery, setPaginationQuery] = useState({ limit });
   const expandedQuery = useGetQueryParamsData(custmPaginationQuery);
   const [search, setSearch] = useState();
 
-  const { FoodItems, FoodItemsLoading, FoodItemsEmpty, totalDocuments } = useGetFoodItems({ page: 1, limit, expand: 'true', ...(search && { search }) });
+  const { FoodItems, FoodItemsLoading, FoodItemsEmpty, totalDocuments } = useGetFoodItems({
+    page: table.page + 1,
+    limit: table.rowsPerPage,
+    expand: 'true',
+    ...(search && { search }),
+  });
   const { categories } = useGetCategories();
-
 
   const [editData, setEditData] = useState(null);
 
   const confirm = useBoolean();
   const upload = useBoolean();
 
-
   // category Filter options
   const CATEGORY_OPTIONS = categories?.map((category) => ({
     value: category.name,
-    label: category.name
-  }))
-
-
-
+    label: category.name,
+  }));
 
   // code for pagination
-  const handlePageChange = useCallback((event, newPage) => {
-    // Call the original onChangePage function
-    table.onChangePage(event, newPage);
+  const handlePageChange = useCallback(
+    (event, newPage) => {
+      // Call the original onChangePage function
+      table.onChangePage(event, newPage);
 
-    setLimit((newPage + 1) * table.rowsPerPage)
-
-  }, [table]);
-
+      setLimit((newPage + 1) * table.rowsPerPage);
+    },
+    [table]
+  );
 
   // handle popupclose
   const handleClose = () => {
-    setEditData(null)
-    upload.onFalse()
-  }
+    setEditData(null);
+    upload.onFalse();
+  };
 
   //  here i m fetching category data and set data
   useEffect(() => {
@@ -157,16 +150,15 @@ export default function FoodItemListView() {
   // this is a code for delete a row
   const handleDeleteRow = useCallback(
     async (id) => {
-
       try {
-        const response = await axiosInstance.delete(endpoints.foodItem.delete(id))
+        const response = await axiosInstance.delete(endpoints.foodItem.delete(id));
         if (response.status === 200) {
           const deleteRow = tableData.filter((row) => row._id !== id);
           setTableData(deleteRow);
           table.onUpdatePageDeleteRow(dataInPage.length);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
     [dataInPage.length, table, tableData]
@@ -184,30 +176,25 @@ export default function FoodItemListView() {
     });
   }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
-
   // edit Menu
 
   const handleEditRow = useCallback(
     (id) => {
       upload.onTrue();
-      const data = tableData.find(item => item._id === id);
+      const data = tableData.find((item) => item._id === id);
       setEditData(data);
     },
     [upload, tableData]
   );
 
-
-
-
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
-    setSearch()
+    setSearch();
   }, []);
 
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-
         {/* this is  my category head code  */}
         <CustomBreadcrumbs
           heading="List"
@@ -232,7 +219,6 @@ export default function FoodItemListView() {
         />
 
         <Card>
-
           <FoodItemTableToolbar
             filters={filters}
             setSearch={setSearch}
@@ -296,27 +282,22 @@ export default function FoodItemListView() {
                     ))
                   ) : (
                     <>
-                      {dataFiltered
-                        .slice(
-                          table.page * table.rowsPerPage,
-                          table.page * table.rowsPerPage + table.rowsPerPage
-                        )
-                        .map((row) => (
-                          <FoodItemTableRow
-                            key={row._id}
-                            row={row}
-                            selected={table.selected.includes(row._id)}
-                            onSelectRow={() => table.onSelectRow(row._id)}
-                            onDeleteRow={() => handleDeleteRow(row._id)}
-                            onEditRow={() => handleEditRow(row._id)}
-                          />
-                        ))}
+                      {dataFiltered.map((row) => (
+                        <FoodItemTableRow
+                          key={row._id}
+                          row={row}
+                          selected={table.selected.includes(row._id)}
+                          onSelectRow={() => table.onSelectRow(row._id)}
+                          onDeleteRow={() => handleDeleteRow(row._id)}
+                          onEditRow={() => handleEditRow(row._id)}
+                        />
+                      ))}
                     </>
                   )}
 
                   <TableEmptyRows
                     height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                    emptyRows={customEmptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
 
                   <TableNoData notFound={notFound} />
@@ -335,7 +316,7 @@ export default function FoodItemListView() {
               const newRowsPerPage = event.target.value;
               table.onChangeRowsPerPage(event);
               setLimit(newRowsPerPage);
-          }}
+            }}
             //
             dense={table.dense}
             onChangeDense={table.onChangeDense}
@@ -343,8 +324,14 @@ export default function FoodItemListView() {
         </Card>
       </Container>
 
-      <CreateFoodItemDialog open={upload.value} onClose={handleClose} editData={editData} title={`${editData != null ? 'Edit Menu' : 'Create Menu'}`} categories={categories} expandedQuery={expandedQuery} />
-
+      <CreateFoodItemDialog
+        open={upload.value}
+        onClose={handleClose}
+        editData={editData}
+        title={`${editData != null ? 'Edit Menu' : 'Create Menu'}`}
+        categories={categories}
+        expandedQuery={expandedQuery}
+      />
 
       <ConfirmDialog
         open={confirm.value}
@@ -375,8 +362,6 @@ export default function FoodItemListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
-
-
   const { name, description, categoryName, category } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
@@ -392,8 +377,14 @@ function applyFilter({ inputData, comparator, filters }) {
   if (name) {
     inputData = inputData.filter((menu) => {
       const nameMatch = name ? menu?.name.toLowerCase().includes(name?.toLowerCase()) : true;
-      const descriptionMatch = description ? menu?.description.toLowerCase().includes(description?.toLowerCase()) : true;
-      const categoryMatch = categoryName ? menu.categories?.some((item) => item.name.toLowerCase().includes(categoryName.toLowerCase())) : true;
+      const descriptionMatch = description
+        ? menu?.description.toLowerCase().includes(description?.toLowerCase())
+        : true;
+      const categoryMatch = categoryName
+        ? menu.categories?.some((item) =>
+            item.name.toLowerCase().includes(categoryName.toLowerCase())
+          )
+        : true;
 
       return nameMatch || descriptionMatch || categoryMatch;
     });
@@ -401,7 +392,7 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (category?.length > 0 && category) {
     inputData = inputData.filter((item) =>
-      item.categories?.some(categoryItem => category.includes(categoryItem.name))
+      item.categories?.some((categoryItem) => category.includes(categoryItem.name))
     );
   }
 
